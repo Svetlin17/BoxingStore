@@ -6,9 +6,9 @@ using System.Text;
 
 namespace BoxingStore.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class BoxingStoreDbContext : IdentityDbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+        public BoxingStoreDbContext(DbContextOptions<BoxingStoreDbContext> options)
             : base(options)
         {
         }
