@@ -15,14 +15,26 @@
         [Required]
         public string Name { get; init; }
 
-        [Required]
-        public ProductSize Size { get; init; }
+        //[Required]
+        //public ProductSize Size { get; init; }
 
         [Range(ProductPriceMin, Int32.MaxValue, ErrorMessage = "Price cannot be 0$")]
         public double Price { get; init; }
 
-        [Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
-        public int Quantity { get; init; }
+        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        public int QuantityXS { get; init; }
+
+        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        public int QuantityS { get; init; }
+
+        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        public int QuantityM { get; init; }
+
+        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        public int QuantityL { get; init; }
+
+        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        public int QuantityXL { get; init; }
 
         [Required]
         public string Description { get; init; }

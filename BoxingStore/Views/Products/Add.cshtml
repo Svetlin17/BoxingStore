@@ -20,20 +20,30 @@
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Quantity"></label>
-                <label asp-for="Size"></label>
-                <input asp-for="Size" class="form-control" placeholder="Choose a size...">
-                <span asp-validation-for="Size" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Price"></label>
                 <input asp-for="Price" class="form-control" placeholder="">
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Quantity"></label>
-                <input asp-for="Quantity" class="form-control" placeholder="">
-                <span asp-validation-for="Quantity" class="text-danger"></span>
+                <label asp-for="QuantityXS">Quantity</label>
+                <input asp-for="QuantityXS" class="form-control" placeholder="">
+                <span asp-validation-for="QuantityXS" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="QuantityS" class="form-control" placeholder="">
+                <span asp-validation-for="QuantityS" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="QuantityM" class="form-control" placeholder="">
+                <span asp-validation-for="QuantityM" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="QuantityL" class="form-control" placeholder="">
+                <span asp-validation-for="QuantityL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input asp-for="QuantityXL" class="form-control" placeholder="">
+                <span asp-validation-for="QuantityXL" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description"></label>
@@ -50,7 +60,8 @@
                 <select asp-for="CategoryId" class="form-control">
                     @foreach (var category in Model.Categories)
                     {
-        <option value="@category.Id">@category.Name</option>}
+                        <option value="@category.Id">@category.Name</option>
+                    }
                 </select>
             </div>
 

@@ -6,6 +6,9 @@
     using BoxingStore.Data;
     using System.Linq;
     using BoxingStore.Data.Models;
+    using BoxingStore.Data.Models.Enums;
+
+    using static Data.DataConstants;
 
     public class ProductsController : Controller
     {
@@ -34,20 +37,31 @@
                 return View(product);
             }
 
-            var productData = new Product
+            if (product.QuantityXS >= ProductQuantityMin)
             {
-                Brand = product.Brand,
-                Name = product.Name,
-                Price = product.Price,
-                Size = product.Size,
-                Quantity = product.Quantity,
-                Description = product.Description,
-                ImageUrl = product.ImageUrl,
-                CategoryId = product.CategoryId
-            };
-
-            this.data.Products.Add(productData);
-            this.data.SaveChanges();
+                this.data.Products.Add(CreateNewProduct(product, 0, product.QuantityXS));
+                this.data.SaveChanges();
+            }
+            if (product.QuantityS >= ProductQuantityMin)
+            {
+                this.data.Products.Add(CreateNewProduct(product, 1, product.QuantityS));
+                this.data.SaveChanges();
+            }
+            if (product.QuantityM >= ProductQuantityMin)
+            {
+                this.data.Products.Add(CreateNewProduct(product, 2, product.QuantityM));
+                this.data.SaveChanges();
+            }
+            if (product.QuantityL >= ProductQuantityMin)
+            {
+                this.data.Products.Add(CreateNewProduct(product, 3, product.QuantityL));
+                this.data.SaveChanges();
+            }
+            if (product.QuantityXL >= ProductQuantityMin)
+            {
+                this.data.Products.Add(CreateNewProduct(product, 4, product.QuantityXL));
+                this.data.SaveChanges();
+            }
 
             return RedirectToAction("Index", "Home");
         }
@@ -61,5 +75,22 @@
                     Name = c.Name
                 })
                 .ToList();
+
+        private Product CreateNewProduct(AddProductFormModel product, int size, int quantity)
+        {
+            var productData = new Product
+            {
+                Brand = product.Brand,
+                Name = product.Name,
+                Price = product.Price,
+                Size = (ProductSize)size,
+                Quantity = quantity,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                CategoryId = product.CategoryId
+            };
+
+            return productData;
+        }
     }
 }
