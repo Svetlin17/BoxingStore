@@ -8,16 +8,19 @@
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
-
-        [Required]
         public string Brand { get; set; }
 
         [Required]
-        public  ProductSize Size { get; set; }
+        public string Name { get; set; }
 
         [Required]
-        public int Price { get; set; }
+        public ProductSize Size { get; set; }
+
+        [Required]
+        public double Price { get; set; }
+
+        [Required]
+        public int Quantity { get; set; }
 
         public string Description { get; set; }
 
