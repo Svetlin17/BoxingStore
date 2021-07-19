@@ -40,7 +40,7 @@ namespace BoxingStore
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.PrepareDatabase();
+            app.PrepareDatabase(); //when running project it checks for migrations, update DB and move on 
 
             if (env.IsDevelopment())
             {

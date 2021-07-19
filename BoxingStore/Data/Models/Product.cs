@@ -2,6 +2,7 @@
 {
     using BoxingStore.Data.Models.Enums;
     using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Product
     {
@@ -14,6 +15,7 @@
         public string Name { get; set; }
 
         [Required]
+        [Column(TypeName = "nvarchar(3)")]  //store enum in DB as a string
         public ProductSize Size { get; set; }
 
         [Required]

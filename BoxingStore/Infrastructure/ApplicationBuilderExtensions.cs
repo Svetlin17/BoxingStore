@@ -7,9 +7,10 @@
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
 
-    public static class ApplicationBuilderExtensions
+    public static class ApplicationBuilderExtensions  //should be static class and method
     {
-        public static IApplicationBuilder PrepareDatabase(this IApplicationBuilder app)
+        //static method to be called on IApplicationBuilder:  app.PrepareDatabase();
+        public static IApplicationBuilder PrepareDatabase(this IApplicationBuilder app) //extension method
         {
             using var scopedServices = app.ApplicationServices.CreateScope();
 

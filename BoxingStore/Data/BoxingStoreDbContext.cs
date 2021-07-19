@@ -1,8 +1,10 @@
 ﻿namespace BoxingStore.Data
 {
     using BoxingStore.Data.Models;
+    using BoxingStore.Data.Models.Enums;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
+    using System;
 
     public class BoxingStoreDbContext : IdentityDbContext
     {
@@ -23,6 +25,14 @@
                 .WithMany(c => c.Products)
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            //builder
+            //    .Entity<Product>()
+            //    .Property(e => e.Size)
+            //    .HasConversion(
+            //        v => v.ToString(),
+            //        v => (ProductSize)Enum.Parse(typeof(ProductSize), v));
+
 
             base.OnModelCreating(builder);
         }
