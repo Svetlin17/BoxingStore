@@ -1,6 +1,5 @@
 ﻿namespace BoxingStore.Models.Products
 {
-    using BoxingStore.Data.Models.Enums;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -15,7 +14,7 @@
         [Required]
         public string Name { get; init; }
 
-        [Range(ProductPriceMin, Int32.MaxValue, ErrorMessage = "Price cannot be 0$")]
+        [Range(ProductPriceMin, Int32.MaxValue, ErrorMessage = ProductPriceMsg)]
         public double Price { get; init; }
 
         //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]

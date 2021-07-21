@@ -1,31 +1,42 @@
-﻿using BoxingStore.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BoxingStore.Controllers
+﻿namespace BoxingStore.Controllers
 {
+    using System.Linq;
+    using System.Diagnostics;
+    using BoxingStore.Data;
+    using BoxingStore.Models;
+    using BoxingStore.Models.Home;
+    using Microsoft.AspNetCore.Mvc;
+
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly BoxingStoreDbContext data;
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+        public HomeController(BoxingStoreDbContext data)
+            => this.data = data;
 
         public IActionResult Index()
         {
-            return View();
-        }
+            var totalProducts = this.data.Products.Count();
 
-        public IActionResult Privacy()
-        {
-            return View();
+            var products = this.data
+                .Products
+                .OrderByDescending(p => p.Id)
+                .Select(p => new ProductIndexViewModel
+                {
+                    Id = p.Id,
+                    Brand = p.Brand,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImageUrl = p.ImageUrl,
+                })
+                .Take(3)
+                .ToList();
+
+            return View(new IndexViewModel
+            {
+                TotalProducts = totalProducts,
+                Products = products
+            });
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

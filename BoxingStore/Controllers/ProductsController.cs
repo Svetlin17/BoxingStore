@@ -17,16 +17,69 @@
         public ProductsController(BoxingStoreDbContext data)
             => this.data = data;
 
+
+        public IActionResult All([FromQuery] AllProductsQueryModel query)
+        {
+            var productsQuery = this.data.Products.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(query.Brand))
+            {
+                productsQuery = productsQuery.Where(p => p.Brand == query.Brand);
+            }
+
+            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
+            {
+                productsQuery = productsQuery.Where(p =>
+                    (p.Brand + " " + p.Name).ToLower().Contains(query.SearchTerm.ToLower()) ||
+                    p.Description.ToLower().Contains(query.SearchTerm.ToLower()));
+            }
+
+            productsQuery = query.Sorting switch
+            {
+                ProductSorting.BrandAndModel => productsQuery.OrderBy(p => p.Brand).ThenBy(p => p.Name), //desc?
+            };
+
+            var totalProducts = productsQuery.Count();
+
+            var products = productsQuery
+                .Skip((query.CurrentPage - 1) * AllProductsQueryModel.ProductsPerPage)
+                .Take(AllProductsQueryModel.ProductsPerPage)
+                .Select(p => new ProductListingViewModel
+                {
+                    Id = p.Id,
+                    Brand = p.Brand,
+                    Name = p.Name,
+                    Price = p.Price,
+                    ImageUrl = p.ImageUrl,
+                    Category = p.Category.Name
+                })
+                .ToList();
+
+            var productBrands = this.data
+                .Products
+                .Select(p => p.Brand)
+                .Distinct()
+                .OrderBy(br => br)
+                .ToList();
+
+            query.TotalProducts = totalProducts;
+            query.Brands = productBrands;
+            query.Products = products;
+
+            return View(query);
+        }
+
+
         //return the View of the form and visualise what is on it
         public IActionResult Add() => View(new AddProductFormModel 
         {
-            Categories = this.GetProductCategories()
+            Categories = this.GetProductCategories() //they are null so initializing them
         });
 
         [HttpPost]
         public IActionResult Add(AddProductFormModel product)
         {
-            if (!this.data.Categories.Any(c => c.Id == product.CategoryId)) //validation - attributes cant
+            if (!this.data.Categories.Any(p => p.Id == product.CategoryId)) //validation - attributes cant
             {
                 this.ModelState.AddModelError(nameof(product.CategoryId), "Category does not exist.");
             }
@@ -54,16 +107,17 @@
                 this.data.SaveChanges();
             }
 
-            return RedirectToAction("Index", "Home"); //must redirect in order not to dublicate data when refreshing
+            //must redirect in order not to dublicate data when refreshing
+            return RedirectToAction(nameof(All));   // (action, controller)
         }
 
         private IEnumerable<ProductCategoryViewModel> GetProductCategories()
             => this.data
                 .Categories
-                .Select(c => new ProductCategoryViewModel
+                .Select(p => new ProductCategoryViewModel
                 {
-                    Id = c.Id,
-                    Name = c.Name
+                    Id = p.Id,
+                    Name = p.Name
                 })
                 .ToList();
 

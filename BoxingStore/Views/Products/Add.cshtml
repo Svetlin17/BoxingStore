@@ -55,6 +55,7 @@
                         <option value="@category.Id">@category.Name</option>
                     }
                 </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
 
             <input class="btn btn-primary" type="submit" value="Save" />
