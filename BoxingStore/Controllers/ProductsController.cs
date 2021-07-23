@@ -18,7 +18,7 @@
             => this.data = data;
 
 
-        public IActionResult All([FromQuery] AllProductsQueryModel query)
+        public IActionResult All([FromQuery] AllProductsQueryModel query) //by def classes dont bind from get request so we need to say explicitly to get it from query
         {
             var productsQuery = this.data.Products.AsQueryable();
 
@@ -36,13 +36,15 @@
 
             productsQuery = query.Sorting switch
             {
-                ProductSorting.BrandAndModel => productsQuery.OrderBy(p => p.Brand).ThenBy(p => p.Name), //desc?
+                ProductSorting.BrandAndModel => productsQuery.OrderBy(p => p.Brand).ThenBy(p => p.Name),
+                ProductSorting.LastAdded => productsQuery.OrderByDescending(c => c.Id),
+                ProductSorting.FirstAdded or _ => productsQuery.OrderBy(c => c.Id)
             };
 
             var totalProducts = productsQuery.Count();
 
             var products = productsQuery
-                .Skip((query.CurrentPage - 1) * AllProductsQueryModel.ProductsPerPage)
+                .Skip((query.CurrentPage - 1) * AllProductsQueryModel.ProductsPerPage) //if page 2 - skip products from page 1
                 .Take(AllProductsQueryModel.ProductsPerPage)
                 .Select(p => new ProductListingViewModel
                 {
@@ -62,6 +64,7 @@
                 .OrderBy(br => br)
                 .ToList();
 
+            //should not be "init" in the AllProductsQueryModel
             query.TotalProducts = totalProducts;
             query.Brands = productBrands;
             query.Products = products;

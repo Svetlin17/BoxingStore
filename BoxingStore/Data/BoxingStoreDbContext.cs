@@ -26,14 +26,6 @@
                 .HasForeignKey(c => c.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            //builder
-            //    .Entity<Product>()
-            //    .Property(e => e.Size)
-            //    .HasConversion(
-            //        v => v.ToString(),
-            //        v => (ProductSize)Enum.Parse(typeof(ProductSize), v));
-
-
             base.OnModelCreating(builder);
         }
     }

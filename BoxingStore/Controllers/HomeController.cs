@@ -20,7 +20,7 @@
 
             var products = this.data
                 .Products
-                .OrderByDescending(p => p.Id)
+                .OrderByDescending(p => p.Id)   //to add the last 3 products 
                 .Select(p => new ProductIndexViewModel
                 {
                     Id = p.Id,
