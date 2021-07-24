@@ -27,7 +27,6 @@ namespace BoxingStore.Data.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -64,23 +63,6 @@ namespace BoxingStore.Data.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("CategoryId");
-
-                    b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("BoxingStore.Data.Models.ProductSizeQuantity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -90,9 +72,9 @@ namespace BoxingStore.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProductId");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("ProductSizeQuantities");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -306,17 +288,6 @@ namespace BoxingStore.Data.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("BoxingStore.Data.Models.ProductSizeQuantity", b =>
-                {
-                    b.HasOne("BoxingStore.Data.Models.Product", "Product")
-                        .WithMany("ProductSizeQuantities")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -371,11 +342,6 @@ namespace BoxingStore.Data.Migrations
             modelBuilder.Entity("BoxingStore.Data.Models.Category", b =>
                 {
                     b.Navigation("Products");
-                });
-
-            modelBuilder.Entity("BoxingStore.Data.Models.Product", b =>
-                {
-                    b.Navigation("ProductSizeQuantities");
                 });
 #pragma warning restore 612, 618
         }
