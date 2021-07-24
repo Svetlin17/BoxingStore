@@ -9,6 +9,7 @@
     using BoxingStore.Data.Models.Enums;
 
     using static Data.DataConstants;
+    using System;
 
     public class ProductsController : Controller
     {
@@ -51,6 +52,7 @@
                     Id = p.Id,
                     Brand = p.Brand,
                     Name = p.Name,
+                    ConvertedName = p.ConvertedName,
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
                     Category = p.Category.Name
@@ -74,7 +76,7 @@
 
 
         //return the View of the form and visualise what is on it
-        public IActionResult Add() => View(new AddProductFormModel 
+        public IActionResult Add() => View(new AddProductFormModel
         {
             Categories = this.GetProductCategories() //they are null so initializing them
         });
@@ -94,19 +96,36 @@
                 return View(product); //if there's wrong input refresh the page, valid data remains filled
             }
 
+            string convertedName = product.Brand.ToLower();
+            string[] nameWords = product.Name.Split(' ');
+            foreach (var word in nameWords)
+            {
+                convertedName += "-" + word.ToLower();
+            }
+
+            /* TODO
+            if (this.data.Products.Any(p => p.ConvertedName == convertedName)) //validates that the converted name is unique
+            {
+                this.ModelState.AddModelError(nameof(product.Name), "A product with that name already exists.");
+            }
+            */
+
+            this.data.Products.Add(CreateNewProduct(product, convertedName));
+            this.data.SaveChanges();
+
             if (product.QuantityS >= ProductQuantityMin)
             {
-                this.data.Products.Add(CreateNewProduct(product, (int)(ProductSize.S), product.QuantityS));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.S, product.QuantityS, convertedName));
                 this.data.SaveChanges();
             }
             if (product.QuantityM >= ProductQuantityMin)
             {
-                this.data.Products.Add(CreateNewProduct(product, (int)(ProductSize.M), product.QuantityM));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.M, product.QuantityM, convertedName));
                 this.data.SaveChanges();
             }
             if (product.QuantityL >= ProductQuantityMin)
             {
-                this.data.Products.Add(CreateNewProduct(product, (int)(ProductSize.L), product.QuantityL));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.L, product.QuantityL, convertedName));
                 this.data.SaveChanges();
             }
 
@@ -124,18 +143,42 @@
                 })
                 .ToList();
 
-        private Product CreateNewProduct(AddProductFormModel product, int size, int quantity)
+        private IEnumerable<ProductSizeQuantityViewModel> GetProductSizeQuantities()
+            => this.data
+                .ProductSizeQuantities
+                .Select(p => new ProductSizeQuantityViewModel
+                {
+                    Id = p.Id,
+                    Size = p.Size,
+                    Quantity = p.Quantity
+                })
+                .ToList();
+
+        private Product CreateNewProduct(AddProductFormModel product, string convertedName)
         {
             var productData = new Product
             {
                 Brand = product.Brand,
                 Name = product.Name,
+                ConvertedName = convertedName,
                 Price = product.Price,
-                Size = (ProductSize)size,
-                Quantity = quantity,
                 Description = product.Description,
                 ImageUrl = product.ImageUrl,
                 CategoryId = product.CategoryId
+            };
+
+            return productData;
+        }
+
+        private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, string convertedName)
+        {
+            var product = this.data.Products.Where(x => x.ConvertedName == convertedName).FirstOrDefault();
+
+            var productData = new ProductSizeQuantity
+            {
+                ProductId = product.Id,
+                Size = (ProductSize)size,
+                Quantity = quantity
             };
 
             return productData;
