@@ -94,19 +94,22 @@
                 return View(product); //if there's wrong input refresh the page, valid data remains filled
             }
 
+            this.data.Products.Add(CreateNewProduct(product));
+            this.data.SaveChanges();
+
             if (product.QuantityS >= ProductQuantityMin)
             {
-                this.data.Products.Add(CreateNewProduct(product, (int)(ProductSize.S), product.QuantityS));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(product, ProductSize.S, product.QuantityS));
                 this.data.SaveChanges();
             }
             if (product.QuantityM >= ProductQuantityMin)
             {
-                this.data.Products.Add(CreateNewProduct(product, (int)(ProductSize.M), product.QuantityM));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(product, ProductSize.M, product.QuantityM));
                 this.data.SaveChanges();
             }
             if (product.QuantityL >= ProductQuantityMin)
             {
-                this.data.Products.Add(CreateNewProduct(product, (int)(ProductSize.L), product.QuantityL));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(product, ProductSize.L, product.QuantityL));
                 this.data.SaveChanges();
             }
 
@@ -124,18 +127,39 @@
                 })
                 .ToList();
 
-        private Product CreateNewProduct(AddProductFormModel product, int size, int quantity)
+        private IEnumerable<ProductSizeQuantityViewModel> GetProductSizeQuantities()
+            => this.data
+                .ProductSizeQuantities
+                .Select(p => new ProductSizeQuantityViewModel
+                {
+                    Id = p.Id,
+                    Size = p.Size,
+                    Quantity = p.Quantity
+                })
+                .ToList();
+
+        private Product CreateNewProduct(AddProductFormModel product)
         {
             var productData = new Product
             {
                 Brand = product.Brand,
                 Name = product.Name,
                 Price = product.Price,
-                Size = (ProductSize)size,
-                Quantity = quantity,
                 Description = product.Description,
                 ImageUrl = product.ImageUrl,
                 CategoryId = product.CategoryId
+            };
+
+            return productData;
+        }
+
+        private ProductSizeQuantity CreateProductSizeQuantity(AddProductFormModel product, ProductSize size, int quantity)
+        {
+            var productData = new ProductSizeQuantity
+            {
+                //ProductId = product.Id,
+                Size = (ProductSize)size,
+                Quantity = quantity
             };
 
             return productData;

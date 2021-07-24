@@ -38,5 +38,7 @@
         public int CategoryId { get; init; }
 
         public IEnumerable<ProductCategoryViewModel> Categories { get; set; }
+
+        public IEnumerable<ProductSizeQuantityViewModel> ProductSizeQuantities { get; set; }
     }
 }
