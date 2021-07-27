@@ -1,4 +1,4 @@
-﻿namespace BoxingStore.Models.Products
+﻿namespace BoxingStore.Models
 {
     public enum ProductSorting
     {

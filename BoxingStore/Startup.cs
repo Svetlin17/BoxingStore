@@ -2,6 +2,8 @@ namespace BoxingStore
 {
     using BoxingStore.Data;
     using BoxingStore.Infrastructure;
+    using BoxingStore.Services.Products;
+    using BoxingStore.Services.Statistics;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -28,6 +30,7 @@ namespace BoxingStore
             services
                 .AddDefaultIdentity<IdentityUser>(options =>
                 {
+                    //options.SignIn.RequireConfirmedAccount = false;  //no emails
                     options.Password.RequireDigit = false;
                     options.Password.RequireLowercase = false;
                     options.Password.RequireNonAlphanumeric = false;
@@ -36,6 +39,9 @@ namespace BoxingStore
                 .AddEntityFrameworkStores<BoxingStoreDbContext>();
 
             services.AddControllersWithViews();
+
+            services.AddTransient<IStatisticsService, StatisticsService>();
+            services.AddTransient<IProductService, ProductService>();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

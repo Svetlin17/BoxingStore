@@ -5,19 +5,24 @@
     using BoxingStore.Data;
     using BoxingStore.Models;
     using BoxingStore.Models.Home;
+    using BoxingStore.Services.Statistics;
     using Microsoft.AspNetCore.Mvc;
 
     public class HomeController : Controller
     {
+        private readonly IStatisticsService statistics;
         private readonly BoxingStoreDbContext data;
 
-        public HomeController(BoxingStoreDbContext data)
-            => this.data = data;
+        public HomeController(
+            IStatisticsService statistics,
+            BoxingStoreDbContext data)
+        {
+            this.statistics = statistics;
+            this.data = data;
+        }
 
         public IActionResult Index()
         {
-            var totalProducts = this.data.Products.Count();
-
             var products = this.data
                 .Products
                 .OrderByDescending(p => p.Id)   //to add the last 3 products 
@@ -32,9 +37,11 @@
                 .Take(3)
                 .ToList();
 
+            var totalStatistics = this.statistics.Total();
+
             return View(new IndexViewModel
             {
-                TotalProducts = totalProducts,
+                TotalProducts = totalStatistics.TotalProducts,
                 Products = products
             });
         }

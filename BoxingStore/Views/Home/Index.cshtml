@@ -1,20 +1,17 @@
 ﻿@model IndexViewModel
 
-@{
-    ViewData["Title"] = "Welcome!";
-}
+@{ ViewBag.Title = "Welcome!"; }
 
 @if (!Model.Products.Any())
 {
-    <div class="jumbotron">
-        <h1 class="display-4">Welcome to our boxing store!</h1>
-        <p class="lead">There are no products in the store currently available so why don't you just add one?</p> 
-        <hr class="my-4">
-        <p class="lead">
-            <a asp-controller="Products" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Product</a>
-        </p>
-    </div>
-}
+<div class="jumbotron">
+    <h1 class="display-4">Welcome to our boxing store!</h1>
+    <p class="lead">There are no products in the store currently available so why don't you just add one?</p>
+    <hr class="my-4">
+    <p class="lead">
+        <a asp-controller="Products" asp-action="Add" class="btn btn-primary btn-lg" role="button">Add Product</a>
+    </p>
+</div>}
 
 <div class="mb-5"></div>
 
@@ -22,14 +19,13 @@
     <div class="carousel-inner">
         @for (int i = 0; i < Model.Products.Count; i++)
         {
-            var car = Model.Products[i];
-            <div class="carousel-item @(i == 0 ? "active" : string.Empty)">
-                <img class="d-block w-100" src="@car.ImageUrl" alt="@car.Brand @car.Name">
-                <div class="carousel-caption d-none d-md-block">
-                    <h5><a class="btn btn-primary" asp-controller="Products" asp-action="Details" asp-route-id="@car.Id">@car.Brand @car.Name - @car.Price</a></h5>
-                </div>
-            </div>
-        }
+            var product = Model.Products[i];
+<div class="carousel-item @(i == 0 ? "active" : string.Empty)">
+    <img class="d-block w-100" src="@product.ImageUrl" alt="@product.Brand @product.Name">
+    <div class="carousel-caption d-none d-md-block">
+        <h5><a class="btn btn-primary" asp-controller="Products" asp-action="Details" asp-route-id="@product.Id">@product.Brand @product.Name - @product.Price$</a></h5>
+    </div>
+</div>}
     </div>
     <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
@@ -43,10 +39,26 @@
 
 <div class="mb-5"></div>
 
-<div class="jumbotron">
-    <div class="row">
-        <h2 class="col-md-4 text-center">
-            @Model.TotalProducts Products
-        </h2>
+<div class="row">
+    <div class="col-12 text-center">
+        <button class="btn btn-primary" id="statistics-button">Show Statistics</button>
     </div>
 </div>
+
+<div class="jumbotron d-none" id="statistics">
+    <div class="row">
+        <h2 class="col-md-4 text-center" id="total-products"></h2>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $('#statistics-button').on('click', ev => {
+            $.get('/api/statistics', (data) => {
+                $('#total-products').text(data.totalProducts + " Products");
+                $('#statistics').removeClass('d-none');
+                $('#statistics-button').hide();
+            });
+        });
+    </script>
+} 

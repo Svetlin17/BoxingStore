@@ -1,7 +1,9 @@
 ﻿namespace BoxingStore.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
+    using BoxingStore.Models;
     using BoxingStore.Models.Products;
+    using BoxingStore.Services.Products;
     using System.Collections.Generic;
     using BoxingStore.Data;
     using System.Linq;
@@ -9,71 +11,36 @@
     using BoxingStore.Data.Models.Enums;
 
     using static Data.DataConstants;
-    using System;
 
     public class ProductsController : Controller
     {
+        private readonly IProductService products;
         private readonly BoxingStoreDbContext data;
 
-        public ProductsController(BoxingStoreDbContext data)
-            => this.data = data;
-
-
-        public IActionResult All([FromQuery] AllProductsQueryModel query) //by def classes dont bind from get request so we need to say explicitly to get it from query
+        public ProductsController(IProductService products, BoxingStoreDbContext data)
         {
-            var productsQuery = this.data.Products.AsQueryable();
+            this.products = products;
+            this.data = data;
+        }
 
-            if (!string.IsNullOrWhiteSpace(query.Brand))
-            {
-                productsQuery = productsQuery.Where(p => p.Brand == query.Brand);
-            }
+        public IActionResult All([FromQuery] AllProductsQueryModel query)
+        {
+            var queryResult = this.products.All(
+                query.Brand,
+                query.SearchTerm,
+                query.Sorting,
+                query.CurrentPage,
+                AllProductsQueryModel.ProductsPerPage);
 
-            if (!string.IsNullOrWhiteSpace(query.SearchTerm))
-            {
-                productsQuery = productsQuery.Where(p =>
-                    (p.Brand + " " + p.Name).ToLower().Contains(query.SearchTerm.ToLower()) ||
-                    p.Description.ToLower().Contains(query.SearchTerm.ToLower()));
-            }
-
-            productsQuery = query.Sorting switch
-            {
-                ProductSorting.BrandAndModel => productsQuery.OrderBy(p => p.Brand).ThenBy(p => p.Name),
-                ProductSorting.LastAdded => productsQuery.OrderByDescending(c => c.Id),
-                ProductSorting.FirstAdded or _ => productsQuery.OrderBy(c => c.Id)
-            };
-
-            var totalProducts = productsQuery.Count();
-
-            var products = productsQuery
-                .Skip((query.CurrentPage - 1) * AllProductsQueryModel.ProductsPerPage) //if page 2 - skip products from page 1
-                .Take(AllProductsQueryModel.ProductsPerPage)
-                .Select(p => new ProductListingViewModel
-                {
-                    Id = p.Id,
-                    Brand = p.Brand,
-                    Name = p.Name,
-                    ConvertedName = p.ConvertedName,
-                    Price = p.Price,
-                    ImageUrl = p.ImageUrl,
-                    Category = p.Category.Name
-                })
-                .ToList();
-
-            var productBrands = this.data
-                .Products
-                .Select(p => p.Brand)
-                .Distinct()
-                .OrderBy(br => br)
-                .ToList();
+            var productBrands = this.products.AllProductBrands();
 
             //should not be "init" in the AllProductsQueryModel
-            query.TotalProducts = totalProducts;
             query.Brands = productBrands;
-            query.Products = products;
+            query.TotalProducts = queryResult.TotalProducts;
+            query.Products = queryResult.Products;
 
             return View(query);
         }
-
 
         //return the View of the form and visualise what is on it
         public IActionResult Add() => View(new AddProductFormModel
@@ -129,8 +96,8 @@
                 this.data.SaveChanges();
             }
 
-            //must redirect in order not to dublicate data when refreshing
-            return RedirectToAction(nameof(All));   // (action, controller)
+
+            return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
         }
 
         private IEnumerable<ProductCategoryViewModel> GetProductCategories()
