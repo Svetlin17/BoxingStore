@@ -1,6 +1,6 @@
-﻿namespace BoxingStore.Models.Products
+﻿namespace BoxingStore.Service.Products
 {
-    public class ProductCategoryViewModel
+    public class ProductCategoryServiceModel
     {
         public int Id { get; init; }
 

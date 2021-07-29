@@ -82,8 +82,10 @@
             <div class="card mb-3">
                 <img class="card-img-top" src="@product.ImageUrl" alt="@product.Brand @product.Name - @product.Price (@product.Category)">
                 <div class="card-body text-center">
-                    <h5 class="card-title text-center">@product.Brand @product.Name - @product.Price$ (@product.Category)</h5>
+                    <h5 class="card-title text-center">@product.Brand @product.Name - @product.Price$</h5>
                     <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ConvertedName" class="btn btn-primary">View More</a>
+                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.ConvertedName" class="btn btn-warning">Edit</a>
+                    <a asp-controller="Products" asp-action="Delete" asp-route-id="@product.ConvertedName" class="btn btn-danger">Delete</a>
                 </div>
             </div>
         </div>

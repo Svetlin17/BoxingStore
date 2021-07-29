@@ -3,10 +3,11 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using BoxingStore.Service.Products;
 
     using static Data.DataConstants;
 
-    public class AddProductFormModel
+    public class ProductFormModel
     {
         [Required]
         public string Brand { get; init; }
@@ -37,7 +38,7 @@
         [Display(Name = "Category")]
         public int CategoryId { get; init; }
 
-        public IEnumerable<ProductCategoryViewModel> Categories { get; set; }
+        public IEnumerable<ProductCategoryServiceModel> Categories { get; set; }
 
         public IEnumerable<ProductSizeQuantityViewModel> ProductSizeQuantities { get; set; }
     }

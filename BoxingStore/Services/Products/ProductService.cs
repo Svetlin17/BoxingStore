@@ -2,8 +2,10 @@
 {
     using System.Collections.Generic;
     using System.Linq;
-    using BoxingStore.Data;
     using BoxingStore.Models;
+    using BoxingStore.Data;
+    using BoxingStore.Data.Models;
+    using BoxingStore.Service.Products;
 
     public class ProductService : IProductService
     {
@@ -11,6 +13,22 @@
 
         public ProductService(BoxingStoreDbContext data)
             => this.data = data;
+
+        public Product Create(ProductFormServiceModel product, string convertedName)
+        {
+            var productData = new Product
+            {
+                Brand = product.Brand,
+                Name = product.Name,
+                ConvertedName = convertedName,
+                Price = product.Price,
+                Description = product.Description,
+                ImageUrl = product.ImageUrl,
+                CategoryId = product.CategoryId
+            };
+
+            return productData;
+        }
 
         public ProductQueryServiceModel All(
             string brand,
@@ -65,13 +83,55 @@
                 Products = products
             };
         }
+        public ProductDetailsServiceModel Details(string convertedName)
+            => this.data
+            .Products
+            .Where(p => p.ConvertedName == convertedName)
+            .Select(p => new ProductDetailsServiceModel
+            {
+                Id = p.Id,
+                Brand = p.Brand,
+                Name = p.Name,
+                ConvertedName = p.ConvertedName,
+                Description = p.Description,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl,
+                Category = p.Category.Name
+            })
+            .FirstOrDefault();
 
-        public IEnumerable<string> AllProductBrands()
+        public IEnumerable<string> AllBrands()
             => this.data
                 .Products
                 .Select(c => c.Brand)
                 .Distinct()
                 .OrderBy(br => br)
                 .ToList();
+
+        public IEnumerable<ProductCategoryServiceModel> AllCategories()
+        => this.data
+                .Categories
+                .Select(p => new ProductCategoryServiceModel
+                {
+                    Id = p.Id,
+                    Name = p.Name
+                })
+                .ToList();
+        public bool CategoryExists(int categoryId)
+        => this.data
+            .Categories
+            .Any(p => p.Id == categoryId);
+
+        public string CreateConvertedName(ProductFormServiceModel product)
+        {
+            string convertedName = product.Brand.ToLower();
+            string[] nameWords = product.Name.Split(' ');
+            foreach (var word in nameWords)
+            {
+                convertedName += "-" + word.ToLower();
+            }
+
+            return convertedName;
+        }
     }
 }
