@@ -10,8 +10,9 @@
             public const int PasswordMaxLength = 40;
         }
          
-        public const int ProductQuantityMin = 1;
+        public const int ProductQuantityMin = 0;
         public const double ProductPriceMin = 0.01;
-        public const string ProductPriceMsg = "Price should be more than 0$";
+        public const string ProductQuantityErrMsg = "Quantity should not be negative";
+        public const string ProductPriceErrMsg = "Price should be more than 0$";
     }
 }

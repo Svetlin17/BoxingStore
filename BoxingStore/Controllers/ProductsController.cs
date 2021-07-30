@@ -9,6 +9,7 @@
     using BoxingStore.Data.Models.Enums;
 
     using static Data.DataConstants;
+    using System.Collections.Generic;
 
     public class ProductsController : Controller
     {
@@ -54,21 +55,23 @@
                 this.ModelState.AddModelError(nameof(product.CategoryId), "Category does not exist.");
             }
 
+            string convertedName = this.products.CreateConvertedName(product);
+
+            if (this.data.Products.Any(p => p.ConvertedName == convertedName)) //validates that the converted name is unique
+            {
+                product.Categories = this.products.AllCategories();
+
+                this.ModelState.AddModelError(nameof(product.Name), "A product with that name already exists.");
+
+                return View(product);
+            }
+
             if (!ModelState.IsValid)
             {
                 product.Categories = this.products.AllCategories(); //to get all categories, not only chosen one
 
                 return View(product); //if there's wrong input refresh the page, valid data remains filled
             }
-
-            string convertedName = this.products.CreateConvertedName(product);
-
-            /* TODO
-            if (this.data.Products.Any(p => p.ConvertedName == convertedName)) //validates that the converted name is unique
-            {
-                this.ModelState.AddModelError(nameof(product.Name), "A product with that name already exists.");
-            }
-            */
 
             this.data.Products.Add(this.products.Create(product, convertedName));
             this.data.SaveChanges();
@@ -92,16 +95,16 @@
             return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
         }
 
-        public IActionResult Edit(string convertedName) //null ?
+        public IActionResult Edit(int id) 
         {
             Product product = this.data
                 .Products
-                .Where(p => p.ConvertedName == convertedName)
+                .Where(p => p.Id == id)
                 .FirstOrDefault();  
 
-            var product1 = this.products.Details(convertedName);
+            var product1 = this.products.Details(id);
 
-            //var data = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id);
+            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
 
             return View(new ProductFormServiceModel
             {
@@ -111,7 +114,10 @@
                 Description = product1.Description,
                 Price = product1.Price,
                 CategoryId = product1.CategoryId,
-                Categories = this.products.AllCategories()
+                Categories = this.products.AllCategories(),
+                QuantityS = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity,
+                QuantityM = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.M).FirstOrDefault().Quantity,
+                QuantityL = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.L).FirstOrDefault().Quantity,
             });
         }
 

@@ -83,10 +83,10 @@
                 Products = products
             };
         }
-        public ProductDetailsServiceModel Details(string convertedName)
+        public ProductDetailsServiceModel Details(int id)
             => this.data
             .Products
-            .Where(p => p.ConvertedName == convertedName)
+            .Where(p => p.Id == id)
             .Select(p => new ProductDetailsServiceModel
             {
                 Id = p.Id,

@@ -14,7 +14,7 @@
             int currentPage,
             int productsPerPage);
 
-        ProductDetailsServiceModel Details(string convertedName);
+        ProductDetailsServiceModel Details(int Id);
 
         Product Create(ProductFormServiceModel product, string convertedName);
 

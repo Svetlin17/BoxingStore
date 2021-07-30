@@ -1,4 +1,6 @@
-﻿using BoxingStore.Service.Products;
+﻿using BoxingStore.Data.Models;
+using BoxingStore.Service.Products;
+using BoxingStore.Services.CustomAttributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,17 +17,19 @@ namespace BoxingStore.Services.Products
         [Required]
         public string Name { get; init; }
 
-        [Range(ProductPriceMin, Int32.MaxValue, ErrorMessage = ProductPriceMsg)]
+        [Range(ProductPriceMin, Int32.MaxValue, ErrorMessage = ProductPriceErrMsg)]
         public double Price { get; init; }
 
-        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        [ProductSizeAttribute(ErrorMessage = ProductQuantityErrMsg)]
         public int QuantityS { get; init; }
 
-        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        [ProductSizeAttribute(ErrorMessage = ProductQuantityErrMsg)]
         public int QuantityM { get; init; }
 
-        //[Range(ProductQuantityMin, Int32.MaxValue, ErrorMessage = "Quantity should be at least 1")]
+        [ProductSizeAttribute(ErrorMessage = ProductQuantityErrMsg)]
         public int QuantityL { get; init; }
+
+        //public ICollection<ProductSizeQuantity> ProductSizeQuantities { get; set; }
 
         [Required]
         public string Description { get; init; }
