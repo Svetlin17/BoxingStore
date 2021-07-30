@@ -1,12 +1,10 @@
 ﻿namespace BoxingStore.Data
 {
     using BoxingStore.Data.Models;
-    using BoxingStore.Data.Models.Enums;
     using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
     using Microsoft.EntityFrameworkCore;
-    using System;
 
-    public class BoxingStoreDbContext : IdentityDbContext
+    public class BoxingStoreDbContext : IdentityDbContext<User>
     {
         public BoxingStoreDbContext(DbContextOptions<BoxingStoreDbContext> options)
             : base(options)

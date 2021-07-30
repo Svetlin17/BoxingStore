@@ -14,6 +14,6 @@
 
         public string ImageUrl { get; init; }
 
-        public string Category { get; init; }
+        public string CategoryName { get; init; }
     }
 }

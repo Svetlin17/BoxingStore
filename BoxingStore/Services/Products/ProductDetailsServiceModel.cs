@@ -3,5 +3,7 @@
     public class ProductDetailsServiceModel : ProductServiceModel
     {
         public string Description { get; init; }
+
+        public int CategoryId { get; init; }
     }
 }

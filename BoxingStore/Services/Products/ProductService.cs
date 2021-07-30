@@ -71,7 +71,7 @@
                     ConvertedName = p.ConvertedName,
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
-                    Category = p.Category.Name
+                    CategoryName = p.Category.Name
                 })
                 .ToList();
 
@@ -96,7 +96,7 @@
                 Description = p.Description,
                 Price = p.Price,
                 ImageUrl = p.ImageUrl,
-                Category = p.Category.Name
+                CategoryName = p.Category.Name
             })
             .FirstOrDefault();
 
@@ -117,6 +117,7 @@
                     Name = p.Name
                 })
                 .ToList();
+
         public bool CategoryExists(int categoryId)
         => this.data
             .Categories

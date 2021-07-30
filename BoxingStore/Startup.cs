@@ -1,6 +1,7 @@
 namespace BoxingStore
 {
     using BoxingStore.Data;
+    using BoxingStore.Data.Models;
     using BoxingStore.Infrastructure;
     using BoxingStore.Services.Products;
     using BoxingStore.Services.Statistics;
@@ -28,7 +29,7 @@ namespace BoxingStore
             services.AddDatabaseDeveloperPageExceptionFilter();
 
             services
-                .AddDefaultIdentity<IdentityUser>(options =>
+                .AddDefaultIdentity<User>(options =>
                 {
                     //options.SignIn.RequireConfirmedAccount = false;  //no emails
                     options.Password.RequireDigit = false;
@@ -36,6 +37,7 @@ namespace BoxingStore
                     options.Password.RequireNonAlphanumeric = false;
                     options.Password.RequireUppercase = false;
                 })
+                .AddRoles<IdentityRole>()
                 .AddEntityFrameworkStores<BoxingStoreDbContext>();
 
             services.AddControllersWithViews();

@@ -1,10 +1,10 @@
 ﻿namespace BoxingStore.Controllers
 {
+    using System.Linq;
     using Microsoft.AspNetCore.Mvc;
     using BoxingStore.Models.Products;
     using BoxingStore.Services.Products;
     using BoxingStore.Data;
-    using System.Linq;
     using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
 
@@ -90,9 +90,30 @@
             }
 
             return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
-        } 
+        }
 
-        //public IActionResult Edit(convertedName)
+        public IActionResult Edit(string convertedName) //null ?
+        {
+            Product product = this.data
+                .Products
+                .Where(p => p.ConvertedName == convertedName)
+                .FirstOrDefault();  
+
+            var product1 = this.products.Details(convertedName);
+
+            //var data = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id);
+
+            return View(new ProductFormServiceModel
+            {
+                Brand = product1.Brand,
+                Name = product1.Name,
+                ImageUrl = product1.ImageUrl,
+                Description = product1.Description,
+                Price = product1.Price,
+                CategoryId = product1.CategoryId,
+                Categories = this.products.AllCategories()
+            });
+        }
 
         //private IEnumerable<ProductSizeQuantityServiceModel> GetProductSizeQuantities()
         //    => this.data
@@ -104,7 +125,6 @@
         //            Quantity = p.Quantity
         //        })
         //        .ToList();
-
 
         private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, string convertedName)
         {
