@@ -81,7 +81,8 @@
                     {
                         Email = adminEmail,
                         UserName = adminEmail,
-                        FullName = "Admin"
+                        FullName = "Admin",
+                        Cart = new Cart()
                     };
 
                     await userManager.CreateAsync(user, adminPassword);

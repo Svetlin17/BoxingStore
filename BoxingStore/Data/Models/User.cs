@@ -8,5 +8,9 @@
     {
         [MaxLength(FullNameMaxLength)]
         public string FullName { get; set; }
+
+        public int CartId { get; set; }
+
+        public Cart Cart { get; set; }
     }
 }

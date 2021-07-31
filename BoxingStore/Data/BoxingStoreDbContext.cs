@@ -17,6 +17,11 @@
 
         public DbSet<ProductSizeQuantity> ProductSizeQuantities { get; init; }
 
+        public DbSet<Cart> Carts { get; init; }
+
+        public DbSet<CartProduct> CartProducts { get; init; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
@@ -31,6 +36,13 @@
                 .HasOne(p => p.Product)
                 .WithMany(p => p.ProductSizeQuantities)
                 .HasForeignKey(p => p.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder
+                .Entity<Cart>()
+                .HasOne(u => u.User)
+                .WithOne(c => c.Cart)
+                .HasForeignKey<User>(c => c.CartId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             base.OnModelCreating(builder);

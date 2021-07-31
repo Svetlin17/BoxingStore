@@ -58,10 +58,11 @@
 
             if (ModelState.IsValid)
             {
-                var user = new User { 
+                var user = new User {
                     UserName = Input.Email,
                     Email = Input.Email,
-                    FullName = Input.FullName
+                    FullName = Input.FullName,
+                    Cart = new Cart()
                 };
 
                 var result = await this.userManager.CreateAsync(user, Input.Password);
