@@ -30,6 +30,22 @@
             return productData;
         }
 
+        public bool Edit(int id, string brand, string name, string description, string imageUrl, double price, int categoryId)
+        {
+            var carData = this.data.Products.Find(id);
+
+            carData.Brand = brand;
+            carData.Name = name;
+            carData.Description = description;
+            carData.ImageUrl = imageUrl;
+            carData.Price = price;
+            carData.CategoryId = categoryId;
+
+            this.data.SaveChanges();
+
+            return true;
+        }
+
         public ProductQueryServiceModel All(
             string brand,
             string searchTerm,

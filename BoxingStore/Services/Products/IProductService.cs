@@ -17,6 +17,14 @@
         ProductDetailsServiceModel Details(int Id);
 
         Product Create(ProductFormServiceModel product, string convertedName);
+        bool Edit(
+                int id,
+                string brand,
+                string name,
+                string description,
+                string imageUrl,
+                double price,
+                int categoryId);
 
         IEnumerable<string> AllBrands();
 

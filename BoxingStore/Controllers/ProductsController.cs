@@ -33,8 +33,7 @@
 
             var productBrands = this.products.AllBrands();
 
-            //should not be "init" in the AllProductsQueryModel
-            query.Brands = productBrands;
+            query.Brands = productBrands; //should not be "init"
             query.TotalProducts = queryResult.TotalProducts;
             query.Products = queryResult.Products;
 
@@ -95,12 +94,12 @@
             return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
         }
 
-        public IActionResult Edit(int id) 
+        public IActionResult Edit(int id)
         {
             Product product = this.data
                 .Products
                 .Where(p => p.Id == id)
-                .FirstOrDefault();  
+                .FirstOrDefault();
 
             var product1 = this.products.Details(id);
 
@@ -121,16 +120,37 @@
             });
         }
 
-        //private IEnumerable<ProductSizeQuantityServiceModel> GetProductSizeQuantities()
-        //    => this.data
-        //        .ProductSizeQuantities
-        //        .Select(p => new ProductSizeQuantityServiceModel
-        //        {
-        //            Id = p.Id,
-        //            Size = p.Size,
-        //            Quantity = p.Quantity
-        //        })
-        //        .ToList();
+        [HttpPost]
+        public IActionResult Edit(int id, ProductFormServiceModel product)
+        {
+            if (!this.products.CategoryExists(product.CategoryId))
+            {
+                this.ModelState.AddModelError(nameof(product.CategoryId), "Category does not exist.");
+            }
+
+            if (!ModelState.IsValid)
+            {
+                product.Categories = this.products.AllCategories();
+
+                return View(product);
+            }
+
+            var carIsEdited = this.products.Edit(
+                id,
+                product.Brand,
+                product.Name,
+                product.Description,
+                product.ImageUrl,
+                product.Price,
+                product.CategoryId);
+
+            if (!carIsEdited)
+            {
+                return BadRequest();
+            }
+
+            return RedirectToAction(nameof(All));
+        }
 
         private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, string convertedName)
         {
