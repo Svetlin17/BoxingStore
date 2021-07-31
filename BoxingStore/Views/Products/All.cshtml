@@ -84,8 +84,11 @@
                 <div class="card-body text-center">
                     <h5 class="card-title text-center">@product.Brand @product.Name - @product.Price$</h5>
                     <a asp-controller="Products" asp-action="Details" asp-route-id="@product.ConvertedName" class="btn btn-primary">View More</a>
-                    <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning">Edit</a>
-                    <a asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
+                    @if (User.IsAdmin())
+                    {
+                        <a asp-controller="Products" asp-action="Edit" asp-route-id="@product.Id" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger">Delete</a>
+                    }
                 </div>
             </div>
         </div>

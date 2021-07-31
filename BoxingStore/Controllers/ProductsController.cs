@@ -1,15 +1,16 @@
 ﻿namespace BoxingStore.Controllers
 {
-    using System.Linq;
-    using Microsoft.AspNetCore.Mvc;
-    using BoxingStore.Models.Products;
-    using BoxingStore.Services.Products;
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
+    using BoxingStore.Models.Products;
+    using BoxingStore.Services.Products;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using System.Collections.Generic;
+    using System.Linq;
 
     using static Data.DataConstants;
-    using System.Collections.Generic;
 
     public class ProductsController : Controller
     {
@@ -41,12 +42,14 @@
         }
 
         //return the View of the form and visualise what is on it
+        //[Authorize(Roles = "Admin")]
         public IActionResult Add() => View(new ProductFormServiceModel
         {
             Categories = this.products.AllCategories() //they are null so initializing them
         });
 
         [HttpPost]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Add(ProductFormServiceModel product)
         {
             if (!this.products.CategoryExists(product.CategoryId)) //validation - attributes cant
@@ -94,6 +97,7 @@
             return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             Product product = this.data
@@ -121,6 +125,7 @@
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id, ProductFormServiceModel product)
         {
             if (!this.products.CategoryExists(product.CategoryId))
