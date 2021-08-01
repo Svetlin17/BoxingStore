@@ -24,7 +24,11 @@
                 string description,
                 string imageUrl,
                 double price,
-                int categoryId);
+                int categoryId,
+                string convertedName,
+                int quantityS,
+                int quantityM,
+                int quantityL);
 
         IEnumerable<string> AllBrands();
 

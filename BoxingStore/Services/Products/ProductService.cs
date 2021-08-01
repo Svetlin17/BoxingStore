@@ -6,6 +6,7 @@
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Service.Products;
+    using BoxingStore.Data.Models.Enums;
 
     public class ProductService : IProductService
     {
@@ -30,16 +31,23 @@
             return productData;
         }
 
-        public bool Edit(int id, string brand, string name, string description, string imageUrl, double price, int categoryId)
+        public bool Edit(int id, string brand, string name, string description, string imageUrl, double price, int categoryId, string convertedName, int quantityS, int quantityM, int quantityL)
         {
-            var carData = this.data.Products.Find(id);
+            var productData = this.data.Products.Find(id);
 
-            carData.Brand = brand;
-            carData.Name = name;
-            carData.Description = description;
-            carData.ImageUrl = imageUrl;
-            carData.Price = price;
-            carData.CategoryId = categoryId;
+            productData.Brand = brand;
+            productData.Name = name;
+            productData.Description = description;
+            productData.ImageUrl = imageUrl;
+            productData.Price = price;
+            productData.CategoryId = categoryId;
+            productData.ConvertedName = convertedName;
+
+            var productDataQuantities = this.data.ProductSizeQuantities.Where(p => p.ProductId == id).ToList();
+
+            productDataQuantities.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity = quantityS;
+            productDataQuantities.Where(x => x.Size == ProductSize.M).FirstOrDefault().Quantity = quantityM;
+            productDataQuantities.Where(x => x.Size == ProductSize.L).FirstOrDefault().Quantity = quantityL;
 
             this.data.SaveChanges();
 

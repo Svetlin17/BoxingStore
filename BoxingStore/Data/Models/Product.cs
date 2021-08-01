@@ -14,7 +14,7 @@
         public string Name { get; set; }
 
         [Required]
-        public string ConvertedName { get; init; }
+        public string ConvertedName { get; set; }
 
         [Required]
         public double Price { get; set; }

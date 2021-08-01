@@ -42,14 +42,14 @@
         }
 
         //return the View of the form and visualise what is on it
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Add() => View(new ProductFormServiceModel
         {
             Categories = this.products.AllCategories() //they are null so initializing them
         });
 
         [HttpPost]
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Add(ProductFormServiceModel product)
         {
             if (!this.products.CategoryExists(product.CategoryId)) //validation - attributes cant
@@ -97,7 +97,7 @@
             return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Edit(int id)
         {
             Product product = this.data
@@ -125,7 +125,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Administrator")]
         public IActionResult Edit(int id, ProductFormServiceModel product)
         {
             if (!this.products.CategoryExists(product.CategoryId))
@@ -140,16 +140,22 @@
                 return View(product);
             }
 
-            var carIsEdited = this.products.Edit(
+            string newConvertedName = this.products.CreateConvertedName(product);
+
+            var productIsEdited = this.products.Edit(
                 id,
                 product.Brand,
                 product.Name,
                 product.Description,
                 product.ImageUrl,
                 product.Price,
-                product.CategoryId);
+                product.CategoryId,
+                newConvertedName,
+                product.QuantityS,
+                product.QuantityM,
+                product.QuantityL);
 
-            if (!carIsEdited)
+            if (!productIsEdited)
             {
                 return BadRequest();
             }
