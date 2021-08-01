@@ -1,0 +1,24 @@
+﻿@model CartViewModel
+
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Cart</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Size</th>
+            <th scope="col">Quantity</th>
+            <th></th>
+        </tr>
+    </thead>
+</table>
+
+@foreach (var product in Model.CartProducts)
+{
+    <partial name="_CartProductsPartial" model="@product" />
+}

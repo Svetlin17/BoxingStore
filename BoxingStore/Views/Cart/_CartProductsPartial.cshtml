@@ -1,0 +1,29 @@
+﻿@model BoxingStore.Models.CartProductsQueryModel
+
+
+<hr />
+<div class="row">
+    <div class="col-md-4 row">
+        <form asp-action="_CartProductsPartial">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="row">
+                <div class="form-group col-md-5">
+                    <select asp-for="Size" class="form-control">
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                    </select>
+                    <span asp-validation-for="Size" class="text-danger"></span>
+                </div>
+                <div class="form-group col-md-5">
+                    <input asp-for="Quantity" class="form-control" />
+                    <span asp-validation-for="Quantity" class="text-danger"></span>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
