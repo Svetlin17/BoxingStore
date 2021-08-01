@@ -107,10 +107,27 @@
                 Products = products
             };
         }
-        public ProductDetailsServiceModel Details(int id)
+        public ProductDetailsServiceModel FindById(int id)
             => this.data
             .Products
             .Where(p => p.Id == id)
+            .Select(p => new ProductDetailsServiceModel
+            {
+                Id = p.Id,
+                Brand = p.Brand,
+                Name = p.Name,
+                ConvertedName = p.ConvertedName,
+                Description = p.Description,
+                Price = p.Price,
+                ImageUrl = p.ImageUrl,
+                CategoryName = p.Category.Name
+            })
+            .FirstOrDefault();
+
+        public ProductDetailsServiceModel FindByConvertedName(string convertedName)
+            => this.data
+            .Products
+            .Where(p => p.ConvertedName == convertedName)
             .Select(p => new ProductDetailsServiceModel
             {
                 Id = p.Id,

@@ -14,7 +14,9 @@
             int currentPage,
             int productsPerPage);
 
-        ProductDetailsServiceModel Details(int Id);
+        ProductDetailsServiceModel FindById(int Id);
+
+        ProductDetailsServiceModel FindByConvertedName(string convertedName);
 
         Product Create(ProductFormServiceModel product, string convertedName);
         bool Edit(

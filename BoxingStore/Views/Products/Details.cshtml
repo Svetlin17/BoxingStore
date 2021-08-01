@@ -1,0 +1,46 @@
+﻿@model BoxingStore.Services.Products.ProductDetailsServiceModel
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container">
+    <div class="card">
+        <div class="container-fliud">
+            <div class="wrapper row">
+                <div class="preview col-md-6">
+                    <div class="container">
+                        <div class="col-md-12 px-0">
+                            <img src=@Model.ImageUrl class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+                <div class="details col-md-6">
+                    <h3 class="product-title">@Model.Brand @Model.Name</h3>
+                    <p class="product-description">@Model.Description</p>
+                    <h3 class="size">Available sizes:</h3>
+                    <select class="form-control d-flex flex-row align-items-center">
+                        @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.S).Quantity > 0)
+                        {
+                            <option>S</option>
+                        }
+                        @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.M).Quantity > 0)
+                        {
+                            <option>M</option>
+                        }
+                        @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.L).Quantity > 0)
+                        {
+                            <option>L</option>
+                        }
+                    </select>
+                    <h2 class="price">Price: <span>@Model.Price</span> USD</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="action text-center">
+    <button type="button" class="btn btn-primary">Add to cart</button>
+</div>

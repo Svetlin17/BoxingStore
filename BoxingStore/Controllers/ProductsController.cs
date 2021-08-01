@@ -100,23 +100,23 @@
         [Authorize(Roles = "Administrator")]
         public IActionResult Edit(int id)
         {
-            Product product = this.data
+            /*Product product = this.data
                 .Products
                 .Where(p => p.Id == id)
-                .FirstOrDefault();
+                .FirstOrDefault*/
 
-            var product1 = this.products.Details(id);
+            var product = this.products.FindById(id);
 
             ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
 
             return View(new ProductFormServiceModel
             {
-                Brand = product1.Brand,
-                Name = product1.Name,
-                ImageUrl = product1.ImageUrl,
-                Description = product1.Description,
-                Price = product1.Price,
-                CategoryId = product1.CategoryId,
+                Brand = product.Brand,
+                Name = product.Name,
+                ImageUrl = product.ImageUrl,
+                Description = product.Description,
+                Price = product.Price,
+                CategoryId = product.CategoryId,
                 Categories = this.products.AllCategories(),
                 QuantityS = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity,
                 QuantityM = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.M).FirstOrDefault().Quantity,
@@ -161,6 +161,28 @@
             }
 
             return RedirectToAction(nameof(All));
+        }
+
+        public IActionResult Details(int id)
+        {
+            var product = this.products.FindById(id);
+
+            var productCategory = this.data.Categories.FirstOrDefault(c => c.Name == product.CategoryName);
+
+            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
+
+            return View(new ProductDetailsServiceModel
+            {
+                Id = product.Id,
+                Brand = product.Brand,
+                Name = product.Name,
+                ImageUrl = product.ImageUrl,
+                Description = product.Description,
+                Price = product.Price,
+                CategoryId = productCategory.Id,
+                CategoryName = product.CategoryName,
+                SizeQuantities = allSizesForCurrentProduct
+            });
         }
 
         private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, string convertedName)
