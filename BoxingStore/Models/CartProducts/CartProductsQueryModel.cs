@@ -5,8 +5,14 @@ namespace BoxingStore.Models
     
     public class CartProductsQueryModel
     {
-        public ProductSize Size { get; init; }
+        public string ProductConvertedName { get; init; }
 
-        public int Quantity { get; init; }
+        public string ProductName { get; init; }
+
+        public string ProductImageUrl { get; init; }
+
+        public ProductSize Size { get; set; }
+
+        public int Quantity { get; set; }
     }
 }

@@ -23,12 +23,17 @@
 
             var cartProducts = new List<CartProductsQueryModel>();
 
-            foreach (var cp in this.data.CartProducts.Where(x => x.CartId == cart.Id).ToList())
+            foreach (var cartProduct in this.data.CartProducts.Where(x => x.CartId == cart.Id).ToList())
             {
+                var product = this.data.Products.Find(cartProduct.ProductId);
+
                 cartProducts.Add(new CartProductsQueryModel
                 {
-                    Quantity = cp.Quantity,
-                    Size = cp.Size
+                    Quantity = cartProduct.Quantity,
+                    Size = cartProduct.Size,
+                    ProductImageUrl = product.ImageUrl,
+                    ProductName = product.Brand + " " + product.Name,
+                    ProductConvertedName = product.ConvertedName
                 });
             }
 
