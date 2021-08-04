@@ -1,5 +1,6 @@
 ﻿namespace BoxingStore.Controllers
 {
+    using AutoMapper;
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
@@ -16,11 +17,13 @@
     {
         private readonly IProductService products;
         private readonly BoxingStoreDbContext data;
+        private readonly IMapper mapper;
 
-        public ProductsController(IProductService products, BoxingStoreDbContext data)
+        public ProductsController(IProductService products, BoxingStoreDbContext data, IMapper mapper)
         {
             this.products = products;
             this.data = data;
+            this.mapper = mapper;
         }
 
         public IActionResult All([FromQuery] AllProductsQueryModel query)
@@ -42,14 +45,14 @@
         }
 
         //return the View of the form and visualise what is on it
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = WebConstants.AdministratorRoleName)]
         public IActionResult Add() => View(new ProductFormServiceModel
         {
             Categories = this.products.AllCategories() //they are null so initializing them
         });
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = WebConstants.AdministratorRoleName)]
         public IActionResult Add(ProductFormServiceModel product)
         {
             if (!this.products.CategoryExists(product.CategoryId)) //validation - attributes cant
@@ -97,14 +100,9 @@
             return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
         }
 
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = WebConstants.AdministratorRoleName)]
         public IActionResult Edit(int id)
         {
-            /*Product product = this.data
-                .Products
-                .Where(p => p.Id == id)
-                .FirstOrDefault*/
-
             var product = this.products.FindById(id);
 
             ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
@@ -125,7 +123,7 @@
         }
 
         [HttpPost]
-        [Authorize(Roles = "Administrator")]
+        [Authorize(Roles = WebConstants.AdministratorRoleName)]
         public IActionResult Edit(int id, ProductFormServiceModel product)
         {
             if (!this.products.CategoryExists(product.CategoryId))

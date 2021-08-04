@@ -25,19 +25,19 @@
 
             foreach (var cartProduct in this.data.CartProducts.Where(x => x.CartId == cart.Id).ToList())
             {
-                var product = this.data.Products.Find(cartProduct.ProductId);
+                var product = this.data.Products.Find(cartProduct.ProductId); //why not through cartProduct.Product ?
 
                 cartProducts.Add(new CartProductsQueryModel
                 {
                     Quantity = cartProduct.Quantity,
                     Size = cartProduct.Size,
-                    ProductImageUrl = product.ImageUrl,
+                    ProductImageUrl = product.ImageUrl,  //cartProduct.Product.ImageUrl,
                     ProductName = product.Brand + " " + product.Name,
                     ProductConvertedName = product.ConvertedName
                 });
             }
 
-            return this.View(new CartViewModel
+            return View(new CartViewModel
             {
                 Id = cart.Id,
                 CartProducts = cartProducts

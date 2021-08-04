@@ -82,7 +82,7 @@
                         Email = adminEmail,
                         UserName = adminEmail,
                         FullName = "Admin",
-                        Cart = new Cart()
+                        Cart = new Cart()   //every User has Cart (both have same Id's)
                     };
 
                     await userManager.CreateAsync(user, adminPassword);
