@@ -35,7 +35,9 @@
                     Size = cartProduct.Size,
                     ProductImageUrl = product.ImageUrl,  //cartProduct.Product.ImageUrl,
                     ProductName = product.Brand + " " + product.Name,
-                    ProductConvertedName = product.ConvertedName
+                    ProductConvertedName = product.ConvertedName,
+                    Price = product.Price,
+                    TotalPrice = product.Price * cartProduct.Quantity
                 });
             }
 

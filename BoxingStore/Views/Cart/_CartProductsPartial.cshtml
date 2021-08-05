@@ -1,4 +1,4 @@
-﻿@model BoxingStore.Models.CartProductsQueryModel
+﻿@model CartProductsQueryModel
 
 <div class="d-flex justify-content-between align-items-center mt-3 p-2 items rounded">
     <div class="d-flex flex-row">
@@ -11,16 +11,24 @@
             </a>
         </div>
     </div>
+    <div class="d-block ml-5 font-weight-bold">
+        <input asp-for="Price" id="price" readonly class="form-control-plaintext" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
     <div class="d-flex flex-row align-items-center">
-        <select asp-for="Size" class="form-control d-flex flex-row align-items-center">
+        <select asp-for="Size" class="form-control ml-5 d-flex flex-row align-items-center">
             <option>S</option>
             <option>M</option>
             <option>L</option>
         </select>
         <span asp-validation-for="Size" class="text-danger"></span>
         <div class="d-block ml-5 font-weight-bold">
-            <input asp-for="Quantity" class="form-control" />
+            <input asp-for="Quantity" id="quantity" class="form-control" onchange="setTotalPrice()"/>
             <span asp-validation-for="Quantity" class="text-danger"></span>
+        </div>
+        <div class="d-block ml-5 font-weight-bold">
+            <input asp-for="TotalPrice" id="totalPrice" readonly class="form-control-plaintext" />
+            <span asp-validation-for="TotalPrice" class="text-danger"></span>
         </div>
     </div>
 </div>
@@ -28,3 +36,13 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    function setTotalPrice() {
+        var price = document.getElementById("price");
+        var quantity = document.getElementById("quantity");
+        var totalPrice = document.getElementById("totalPrice");
+
+        totalPrice.value = price.value * quantity.value;
+    }
+</script>
