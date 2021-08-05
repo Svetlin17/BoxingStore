@@ -5,6 +5,18 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@if (Model.NoteAfterOrder)
+{
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Successfully added!</h5>
+            <p class="card-text">Successfully added @Model.Brand @Model.Name.</p>
+            <a asp-controller="Cart" asp-action="Cart" class="btn btn-primary">View Cart</a>
+        </div>
+    </div>
+    <br />
+}
+
 <div class="container">
     <div class="card">
         <div class="container-fliud">
@@ -19,28 +31,12 @@
                 <div class="details col-md-6">
                     <h3 class="product-title">@Model.Brand @Model.Name</h3>
                     <p class="product-description">@Model.Description</p>
-                    <h3 class="size">Available sizes:</h3>
-                    <select class="form-control d-flex flex-row align-items-center">
-                        @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.S).Quantity > 0)
-                        {
-                            <option>S</option>
-                        }
-                        @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.M).Quantity > 0)
-                        {
-                            <option>M</option>
-                        }
-                        @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.L).Quantity > 0)
-                        {
-                            <option>L</option>
-                        }
-                    </select>
-                    <h2 class="price">Price: <span>@Model.Price</span> USD</h2>
+                    <h2 class="price">Price: <span>@Model.Price</span>$</h2>
+                    <div>
+                        <partial name="_AddProductToCartPartial" model="@new ProductSizeQuantityServiceModel { ProductId = Model.Id, SizeQuantities = Model.SizeQuantities}" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-<div class="action text-center">
-    <button type="button" class="btn btn-primary">Add to cart</button>
 </div>

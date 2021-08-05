@@ -1,0 +1,41 @@
+﻿@model ProductSizeQuantityServiceModel
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Size" class="control-label">Available sizes:</label>
+                <select asp-for="Size" class="form-control">
+                    @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.S).Quantity > 0)
+                    {
+                        <option>S</option>
+                    }
+                    @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.M).Quantity > 0)
+                    {
+                        <option>M</option>
+                    }
+                    @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.L).Quantity > 0)
+                    {
+                        <option>L</option>
+                    }
+                </select>
+                <span asp-validation-for="Size" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Quantity" class="control-label">Quantity:</label>
+                <input asp-for="Quantity" class="form-control" value="1" />
+                <span asp-validation-for="Quantity" class="text-danger"></span>
+            </div>
+            <div class="action text-center">
+                <button type="submit" class="btn btn-primary">Add to cart</button>
+            </div>
+        </form>
+    </div>
+</div>
+<hr />
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

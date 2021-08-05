@@ -5,8 +5,8 @@
     using BoxingStore.Models.Cart;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
-    using System.Collections.ObjectModel;
     using System.Linq;
+    using System.Security.Claims;
 
     public class CartController : Controller
     {
@@ -19,7 +19,9 @@
 
         public IActionResult Cart()
         {
-            var cart = this.data.Carts.Where(x => x.Id == 2).FirstOrDefault(); //TODO CurrentUser.Cart
+            var currentCartId = this.data.Users.Find(this.User.FindFirstValue(ClaimTypes.NameIdentifier)).CartId;
+
+            var cart = this.data.Carts.Find(currentCartId);
 
             var cartProducts = new List<CartProductsQueryModel>();
 

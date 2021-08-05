@@ -1,6 +1,5 @@
 ﻿namespace BoxingStore.Controllers
 {
-    using AutoMapper;
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
@@ -10,20 +9,18 @@
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
-
+    using System.Security.Claims;
     using static Data.DataConstants;
 
     public class ProductsController : Controller
     {
         private readonly IProductService products;
         private readonly BoxingStoreDbContext data;
-        private readonly IMapper mapper;
 
-        public ProductsController(IProductService products, BoxingStoreDbContext data, IMapper mapper)
+        public ProductsController(IProductService products, BoxingStoreDbContext data)
         {
             this.products = products;
             this.data = data;
-            this.mapper = mapper;
         }
 
         public IActionResult All([FromQuery] AllProductsQueryModel query)
@@ -180,6 +177,45 @@
                 CategoryId = productCategory.Id,
                 CategoryName = product.CategoryName,
                 SizeQuantities = allSizesForCurrentProduct
+            });
+        }
+
+        [HttpPost]
+        public IActionResult Details(ProductSizeQuantityServiceModel productModel)
+        {
+            var product = this.products.FindById(productModel.Id);
+
+            //TODO this.data.Products.Add(this.products.CreateCartProduct(...));
+
+            var currentUserCartId = this.data.Users.Find(this.User.FindFirstValue(ClaimTypes.NameIdentifier)).CartId;
+
+            var cartProduct = new CartProduct
+            {
+                CartId = currentUserCartId,
+                ProductId = productModel.Id,
+                Quantity = productModel.Quantity,
+                Size = productModel.Size
+            };
+
+            this.data.CartProducts.Add(cartProduct);
+            this.data.SaveChanges();
+
+            var productCategory = this.data.Categories.FirstOrDefault(c => c.Name == product.CategoryName);
+
+            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
+
+            return View(new ProductDetailsServiceModel
+            {
+                Id = product.Id,
+                Brand = product.Brand,
+                Name = product.Name,
+                ImageUrl = product.ImageUrl,
+                Description = product.Description,
+                Price = product.Price,
+                CategoryId = productCategory.Id,
+                CategoryName = product.CategoryName,
+                SizeQuantities = allSizesForCurrentProduct,
+                NoteAfterOrder = true
             });
         }
 

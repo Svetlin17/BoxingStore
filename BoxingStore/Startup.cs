@@ -73,6 +73,7 @@ namespace BoxingStore
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
+                    //endpoints.MapDefaultAreaRoute();
                     endpoints.MapDefaultControllerRoute();
                     endpoints.MapRazorPages();
                 });

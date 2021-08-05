@@ -11,5 +11,7 @@ namespace BoxingStore.Services.Products
         public int CategoryId { get; init; }
 
         public ICollection<ProductSizeQuantity> SizeQuantities { get; set; }
+
+        public bool NoteAfterOrder { get; set; }
     }
 }

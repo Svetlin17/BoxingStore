@@ -120,6 +120,7 @@
                 Description = p.Description,
                 Price = p.Price,
                 ImageUrl = p.ImageUrl,
+                CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name
             })
             .FirstOrDefault();
@@ -137,6 +138,7 @@
                 Description = p.Description,
                 Price = p.Price,
                 ImageUrl = p.ImageUrl,
+                CategoryId = p.CategoryId,
                 CategoryName = p.Category.Name
             })
             .FirstOrDefault();
