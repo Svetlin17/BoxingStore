@@ -5,7 +5,9 @@ namespace BoxingStore.Models
     
     public class CartProductsQueryModel
     {
-        public string ProductConvertedName { get; init; }
+        public int Id { get; init; }
+
+        public int ProductId { get; init; }
 
         public string ProductName { get; init; }
 

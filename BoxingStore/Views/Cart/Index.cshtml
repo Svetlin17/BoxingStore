@@ -1,0 +1,49 @@
+﻿@model CartViewModel
+
+@{
+    ViewBag.Title = "Cart";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Cart</h1>
+
+@if (Model.CartProducts.Count == 0)
+{
+    <div class="jumbotron">
+        <h3>The cart is empty. View the products to buy some.</h3>
+        <hr class="my-4">
+        <p class="lead">
+            <a asp-controller="Products" asp-action="All" class="btn btn-primary btn-lg" role="button">View Products</a>
+        </p>
+    </div>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col" width="260">Product</th>
+                <th scope="col" width="260">Price</th>
+                <th scope="col" width="220">Size</th>
+                <th scope="col" width="260">Quantity</th>
+                <th scope="col" width="30">Total Price</th>
+                <th></th>
+            </tr>
+        </thead>
+    </table>
+
+    @foreach (var product in Model.CartProducts)
+    {
+        <partial name="_CartProductsPartial" model="@product" />
+    }
+
+    <div class="float-right">
+        <hr />
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <h3>Total Price:</h3>
+                <input asp-for="TotalPrice" readonly class="form-control-plaintext form-control-lg" />
+            </div>
+        </div>
+    </div>
+}

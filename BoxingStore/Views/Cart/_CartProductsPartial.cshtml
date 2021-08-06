@@ -1,12 +1,12 @@
 ﻿@model CartProductsQueryModel
 
 <div class="d-flex justify-content-between align-items-center mt-3 p-2 items rounded">
-    <div class="d-flex flex-row">
-        <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductConvertedName">
+    <div scope="col" width="260" class="d-flex flex-row">
+        <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">
             <img src="@Model.ProductImageUrl" width="50" height="50">
         </a>
         <div class="ml-2">
-            <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductConvertedName">
+            <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">
                 @Model.ProductName
             </a>
         </div>
@@ -16,19 +16,22 @@
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
     <div class="d-flex flex-row align-items-center">
-        <select asp-for="Size" class="form-control ml-5 d-flex flex-row align-items-center">
+        <select asp-for="Size" class="form-control col-md-6 align-items-center">
             <option>S</option>
             <option>M</option>
             <option>L</option>
         </select>
         <span asp-validation-for="Size" class="text-danger"></span>
         <div class="d-block ml-5 font-weight-bold">
-            <input asp-for="Quantity" id="quantity" class="form-control" onchange="setTotalPrice()"/>
+            <input asp-for="Quantity" id="quantity" class="form-control" onchange="setProductTotalPrice()"/>
             <span asp-validation-for="Quantity" class="text-danger"></span>
         </div>
         <div class="d-block ml-5 font-weight-bold">
             <input asp-for="TotalPrice" id="totalPrice" readonly class="form-control-plaintext" />
             <span asp-validation-for="TotalPrice" class="text-danger"></span>
+        </div>
+        <div>
+            <a asp-controller="Cart" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">X</a>
         </div>
     </div>
 </div>
@@ -38,7 +41,7 @@
 }
 
 <script>
-    function setTotalPrice() {
+    function setProductTotalPrice() {
         var price = document.getElementById("price");
         var quantity = document.getElementById("quantity");
         var totalPrice = document.getElementById("totalPrice");

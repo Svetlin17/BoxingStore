@@ -2,9 +2,7 @@
 {
     using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
-    using System;
     using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
 
     public class ProductSizeQuantityServiceModel
     {
