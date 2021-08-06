@@ -54,6 +54,15 @@
             });
         }
 
+        public IActionResult Edit(int id, int quantity)
+        {
+            this.data.CartProducts.Find(id).Quantity = quantity;
+
+            this.data.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         public IActionResult Delete(int id)
         {
             var cartProduct = this.data.CartProducts.Find(id);

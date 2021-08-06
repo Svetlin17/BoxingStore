@@ -23,11 +23,12 @@
         </select>
         <span asp-validation-for="Size" class="text-danger"></span>
         <div class="d-block ml-5 font-weight-bold">
-            <input asp-for="Quantity" id="quantity" class="form-control" onchange="setProductTotalPrice()"/>
-            <span asp-validation-for="Quantity" class="text-danger"></span>
+            <a asp-controller="Cart" asp-action="Edit" asp-route-id="@Model.Id" asp-route-quantity="@(Model.Quantity - 1)" class="btn btn-outline-secondary btn-sm @(Model.Quantity == 1 ? "disabled" : "" )" >-</a>
+            <input asp-for="Quantity" id="quantity" readonly class="form-control" onchange="setProductTotalPrice()" />
+            <a asp-controller="Cart" asp-action="Edit" asp-route-id="@Model.Id" asp-route-quantity="@(Model.Quantity + 1)" class="btn btn-outline-secondary btn-sm">+</a>
         </div>
         <div class="d-block ml-5 font-weight-bold">
-            <input asp-for="TotalPrice" id="totalPrice" readonly class="form-control-plaintext" />
+            <input asp-for="TotalPrice" id="totalPrice" readonly class="form-control" />
             <span asp-validation-for="TotalPrice" class="text-danger"></span>
         </div>
         <div>
