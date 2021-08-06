@@ -10,6 +10,8 @@
 
         public string Brand { get; init; }
 
+        public string Category { get; init; }
+
         [Display(Name = "Search by text")]
         public string SearchTerm { get; init; }
 
@@ -20,6 +22,8 @@
         public int TotalProducts { get; set; }
 
         public IEnumerable<string> Brands { get; set; }
+
+        public IEnumerable<string> Categories { get; set; }
 
         public IEnumerable<ProductServiceModel> Products { get; set; }
     }

@@ -10,6 +10,7 @@
     using System.Collections.Generic;
     using System.Linq;
     using System.Security.Claims;
+
     using static Data.DataConstants;
 
     public class ProductsController : Controller
@@ -32,9 +33,9 @@
                 query.CurrentPage,
                 AllProductsQueryModel.ProductsPerPage);
 
-            var productBrands = this.products.AllBrands();
+            var productBrands = this.products.BrandsSorting();
 
-            query.Brands = productBrands; //should not be "init"
+            query.Brands = productBrands; 
             query.TotalProducts = queryResult.TotalProducts;
             query.Products = queryResult.Products;
 
@@ -102,7 +103,7 @@
         {
             var product = this.products.FindById(id);
 
-            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
+            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
 
             return View(new ProductFormServiceModel
             {
@@ -162,9 +163,9 @@
         {
             var product = this.products.FindById(id);
 
-            var productCategory = this.data.Categories.FirstOrDefault(c => c.Name == product.CategoryName);
+            var productCategory = this.products.ProductCategory(product.CategoryName);
 
-            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
+            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
 
             return View(new ProductDetailsServiceModel
             {
@@ -185,8 +186,6 @@
         {
             var product = this.products.FindById(productModel.Id);
 
-            //TODO this.data.Products.Add(this.products.CreateCartProduct(...));
-
             var currentUserCartId = this.data.Users.Find(this.User.FindFirstValue(ClaimTypes.NameIdentifier)).CartId;
 
             var cartProduct = new CartProduct
@@ -200,9 +199,9 @@
             this.data.CartProducts.Add(cartProduct);
             this.data.SaveChanges();
 
-            var productCategory = this.data.Categories.FirstOrDefault(c => c.Name == product.CategoryName);
+            var productCategory = this.products.ProductCategory(product.CategoryName);
 
-            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.data.ProductSizeQuantities.Where(p => p.ProductId == product.Id).ToList();
+            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
 
             return View(new ProductDetailsServiceModel
             {

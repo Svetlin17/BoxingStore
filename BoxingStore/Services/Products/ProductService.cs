@@ -79,7 +79,9 @@
             {
                 ProductSorting.BrandAndModel => productsQuery.OrderBy(p => p.Brand).ThenBy(p => p.Name),
                 ProductSorting.LastAdded => productsQuery.OrderByDescending(p => p.Id),
-                ProductSorting.FirstAdded or _ => productsQuery.OrderBy(p => p.Id)
+                ProductSorting.FirstAdded => productsQuery.OrderBy(p => p.Id),
+                ProductSorting.TheMostExpensive => productsQuery.OrderByDescending(p => p.Price),
+                ProductSorting.TheCheapest or _ => productsQuery.OrderBy(p => p.Price),
             };
 
             var totalProducts = productsQuery.Count();
@@ -143,13 +145,16 @@
             })
             .FirstOrDefault();
 
-        public IEnumerable<string> AllBrands()
+        public IEnumerable<string> BrandsSorting()
             => this.data
                 .Products
-                .Select(c => c.Brand)
+                .Select(p => p.Brand)
                 .Distinct()
                 .OrderBy(br => br)
                 .ToList();
+
+        public ICollection<ProductSizeQuantity> ProductSizeQuantity(int productId) 
+            => this.data.ProductSizeQuantities.Where(p => p.ProductId == productId).ToList();
 
         public IEnumerable<ProductCategoryServiceModel> AllCategories()
         => this.data
@@ -160,6 +165,9 @@
                     Name = p.Name
                 })
                 .ToList();
+
+        public Category ProductCategory(string productCategoryName)
+            => this.data.Categories.FirstOrDefault(c => c.Name == productCategoryName);
 
         public bool CategoryExists(int categoryId)
         => this.data

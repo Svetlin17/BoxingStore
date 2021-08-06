@@ -18,8 +18,6 @@
 
         public int Quantity { get; set; }
 
-        //public int MaxPossibleQuantity { get; set; }
-
         public ICollection<ProductSizeQuantity> SizeQuantities { get; set; }
     }
 }

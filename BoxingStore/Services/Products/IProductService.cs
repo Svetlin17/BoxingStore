@@ -32,9 +32,13 @@
                 int quantityM,
                 int quantityL);
 
-        IEnumerable<string> AllBrands();
+        IEnumerable<string> BrandsSorting();
+
+        ICollection<ProductSizeQuantity> ProductSizeQuantity(int productId);
 
         IEnumerable<ProductCategoryServiceModel> AllCategories();
+
+        Category ProductCategory(string productCategoryName);
 
         bool CategoryExists(int categoryId);
 
