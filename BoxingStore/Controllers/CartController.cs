@@ -25,32 +25,32 @@
 
             var cartProducts = new List<CartProductsQueryModel>();
 
-            var totalPrice = 0.0;
+            var cartTotalPrice = 0.0;
 
             foreach (var cartProduct in this.data.CartProducts.Where(x => x.CartId == cart.Id).ToList())
             {
-                var product = this.data.Products.Find(cartProduct.ProductId); //why not through cartProduct.Product ?
+                var product = this.data.Products.Find(cartProduct.ProductId);
 
                 cartProducts.Add(new CartProductsQueryModel
                 {
                     Id = cartProduct.Id,
                     Quantity = cartProduct.Quantity,
                     Size = cartProduct.Size,
-                    ProductImageUrl = product.ImageUrl,  //cartProduct.Product.ImageUrl,
+                    ProductImageUrl = product.ImageUrl,
                     ProductName = product.Brand + " " + product.Name,
                     ProductId = product.Id,
                     Price = product.Price,
-                    TotalPrice = product.Price * cartProduct.Quantity
+                    ProductTotalPrice = product.Price * cartProduct.Quantity //the totalprice of 1 single product in the cart
                 });
 
-                totalPrice += product.Price * cartProduct.Quantity;
+                cartTotalPrice += product.Price * cartProduct.Quantity;
             }
 
             return View(new CartViewModel
             {
                 Id = cart.Id,
                 CartProducts = cartProducts,
-                TotalPrice = totalPrice
+                TotalPrice = cartTotalPrice
             });
         }
 

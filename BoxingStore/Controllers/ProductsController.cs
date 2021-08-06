@@ -159,6 +159,25 @@
             return RedirectToAction(nameof(All));
         }
 
+        [Authorize(Roles = WebConstants.AdministratorRoleName)]
+        public IActionResult Delete(int id)
+        {
+            var product = this.data.Products.Find(id);
+
+            ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
+
+            foreach (var psq in allSizesForCurrentProduct)
+            {
+                this.data.ProductSizeQuantities.Remove(psq);
+            }
+
+            this.data.Products.Remove(product);
+
+            this.data.SaveChanges();
+
+            return RedirectToAction(nameof(All));
+        }
+
         public IActionResult Details(int id)
         {
             var product = this.products.FindById(id);

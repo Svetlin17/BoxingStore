@@ -19,6 +19,6 @@ namespace BoxingStore.Models
 
         public double Price { get; set; }
 
-        public double TotalPrice { get; set; }
+        public double ProductTotalPrice { get; set; }
     }
 }

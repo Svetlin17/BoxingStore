@@ -35,6 +35,11 @@
                     <div>
                         <partial name="_AddProductToCartPartial" model="@new ProductSizeQuantityServiceModel { ProductId = Model.Id, SizeQuantities = Model.SizeQuantities}" />
                     </div>
+                    @if (User.IsAdmin())
+                    {
+                        <a asp-controller="Products" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>
+                        <a asp-controller="Products" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">Delete</a>
+                    }
                 </div>
             </div>
         </div>

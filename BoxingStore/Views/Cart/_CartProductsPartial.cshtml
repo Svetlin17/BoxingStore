@@ -28,8 +28,8 @@
             <a asp-controller="Cart" asp-action="Edit" asp-route-id="@Model.Id" asp-route-quantity="@(Model.Quantity + 1)" class="btn btn-outline-secondary btn-sm">+</a>
         </div>
         <div class="d-block ml-5 font-weight-bold">
-            <input asp-for="TotalPrice" id="totalPrice" readonly class="form-control" />
-            <span asp-validation-for="TotalPrice" class="text-danger"></span>
+            <input asp-for="ProductTotalPrice" id="totalPrice" readonly class="form-control" />
+            <span asp-validation-for="ProductTotalPrice" class="text-danger"></span>
         </div>
         <div>
             <a asp-controller="Cart" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">X</a>
