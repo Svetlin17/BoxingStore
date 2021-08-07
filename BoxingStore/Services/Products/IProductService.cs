@@ -14,6 +14,8 @@
             int currentPage,
             int productsPerPage);
 
+        IEnumerable<LatestProductServiceModel> Latest();
+
         ProductDetailsServiceModel FindById(int Id);
 
         ProductDetailsServiceModel FindByConvertedName(string convertedName);

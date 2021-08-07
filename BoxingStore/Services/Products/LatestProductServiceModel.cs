@@ -1,6 +1,6 @@
-﻿namespace BoxingStore.Models.Home
+﻿namespace BoxingStore.Services.Products
 {
-    public class ProductIndexViewModel
+    public class LatestProductServiceModel
     {
         public int Id { get; init; }
 

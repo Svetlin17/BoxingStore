@@ -7,13 +7,19 @@
     using BoxingStore.Data.Models;
     using BoxingStore.Service.Products;
     using BoxingStore.Data.Models.Enums;
+    using AutoMapper.QueryableExtensions;
+    using AutoMapper;
 
     public class ProductService : IProductService
     {
         private readonly BoxingStoreDbContext data;
+        private IConfigurationProvider mapper;
 
-        public ProductService(BoxingStoreDbContext data)
-            => this.data = data;
+        public ProductService(BoxingStoreDbContext data, IMapper mapper)
+        { 
+            this.data = data;
+            this.mapper = mapper.ConfigurationProvider;
+        } 
 
         public Product Create(ProductFormServiceModel product, string convertedName)
         {
@@ -53,6 +59,22 @@
 
             return true;
         }
+
+        public IEnumerable<LatestProductServiceModel> Latest()
+            => this.data
+                .Products
+                .OrderByDescending(p => p.Id)  
+                .ProjectTo<LatestProductServiceModel>(this.mapper)
+                //.Select(p => new LatestProductServiceModel
+                //{
+                //    Id = p.Id,
+                //    Brand = p.Brand,
+                //    Name = p.Name,
+                //    Price = p.Price,
+                //    ImageUrl = p.ImageUrl,
+                //})
+                .Take(3)
+                .ToList();
 
         public ProductQueryServiceModel All(
             string brand,
@@ -153,7 +175,7 @@
                 .OrderBy(br => br)
                 .ToList();
 
-        public ICollection<ProductSizeQuantity> ProductSizeQuantity(int productId) 
+        public ICollection<ProductSizeQuantity> ProductSizeQuantity(int productId)
             => this.data.ProductSizeQuantities.Where(p => p.ProductId == productId).ToList();
 
         public IEnumerable<ProductCategoryServiceModel> AllCategories()

@@ -4,38 +4,35 @@
     using BoxingStore.Models;
     using BoxingStore.Models.Home;
     using BoxingStore.Services.Statistics;
+    using BoxingStore.Services.Products;
     using Microsoft.AspNetCore.Mvc;
-    using BoxingStore.Services.Home;
     using System.Collections.Generic;
+    using System.Linq;
 
     public class HomeController : Controller
     {
-        private readonly IHomeService homeService;
+        private readonly IProductService products;
         private readonly IStatisticsService statistics;
 
-        public HomeController(IHomeService homeService, IStatisticsService statistics)
+        public HomeController(IProductService products, IStatisticsService statistics)
         {
-            this.homeService = homeService;
+            this.products = products;
             this.statistics = statistics;
         }
 
         public IActionResult Index()
         {
-            List<ProductIndexViewModel> products = this.homeService.GetLastThreeProducts();
+            List<LatestProductServiceModel> latestProducts = this.products.Latest().ToList();
 
             var totalStatistics = this.statistics.Total();
 
             return View(new IndexViewModel
             {
                 TotalProducts = totalStatistics.TotalProducts,
-                Products = products
+                Products = latestProducts
             });
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
+        public IActionResult Error() => View();
     }
 }
