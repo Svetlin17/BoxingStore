@@ -178,6 +178,7 @@
             return RedirectToAction(nameof(All));
         }
 
+
         public IActionResult Details(int id)
         {
             var product = this.products.FindById(id);
@@ -233,7 +234,7 @@
                 CategoryId = productCategory.Id,
                 CategoryName = product.CategoryName,
                 SizeQuantities = allSizesForCurrentProduct,
-                NoteAfterOrder = true
+                NoteAfterOrder = true  //after adding in DB 
             });
         }
 

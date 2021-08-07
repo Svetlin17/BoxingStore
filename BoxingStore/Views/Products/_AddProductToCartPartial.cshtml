@@ -1,5 +1,10 @@
 ﻿@model ProductSizeQuantityServiceModel
 
+@using BoxingStore.Data.Models
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<User> SignInManager
+
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -29,7 +34,14 @@
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="action text-center">
-                <button type="submit" class="btn btn-primary">Add to cart</button>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <button type="submit" class="btn btn-primary">Add to cart</button>
+                }
+                else
+                {
+                    <p class="lead">Register or login to buy the product</p>
+                }
             </div>
         </form>
     </div>

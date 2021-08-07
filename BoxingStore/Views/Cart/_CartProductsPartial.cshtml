@@ -23,16 +23,24 @@
         </select>
         <span asp-validation-for="Size" class="text-danger"></span>
         <div class="d-block ml-5 font-weight-bold">
-            <a asp-controller="Cart" asp-action="Edit" asp-route-id="@Model.Id" asp-route-quantity="@(Model.Quantity - 1)" class="btn btn-outline-secondary btn-sm @(Model.Quantity == 1 ? "disabled" : "" )" >-</a>
-            <input asp-for="Quantity" id="quantity" readonly class="form-control" onchange="setProductTotalPrice()" />
-            <a asp-controller="Cart" asp-action="Edit" asp-route-id="@Model.Id" asp-route-quantity="@(Model.Quantity + 1)" class="btn btn-outline-secondary btn-sm">+</a>
+            <a asp-controller="Cart" 
+               asp-action="Edit" 
+               asp-route-id="@Model.Id" 
+               asp-route-quantity="@(Model.Quantity - 1)" 
+               class="btn btn-outline-secondary btn-sm @(Model.Quantity == 1 ? "disabled" : "" )" >-</a>
+            <input asp-for="Quantity" id="quantity" readonly class="form-control"/>
+            <a asp-controller="Cart" 
+               asp-action="Edit"
+               asp-route-id="@Model.Id"
+               asp-route-quantity="@(Model.Quantity + 1)" 
+               class="btn btn-outline-secondary btn-sm">+</a>
         </div>
         <div class="d-block ml-5 font-weight-bold">
             <input asp-for="ProductTotalPrice" id="totalPrice" readonly class="form-control" />
             <span asp-validation-for="ProductTotalPrice" class="text-danger"></span>
         </div>
         <div>
-            <a asp-controller="Cart" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger">X</a>
+            <a asp-controller="Cart" asp-action="Delete" asp-route-id="@Model.Id" id="delete-btn" onclick="preventDoubleClick()" class="btn btn-danger">X</a>
         </div>
     </div>
 </div>
@@ -42,11 +50,9 @@
 }
 
 <script>
-    function setProductTotalPrice() {
-        var price = document.getElementById("price");
-        var quantity = document.getElementById("quantity");
-        var totalPrice = document.getElementById("totalPrice");
+    function preventDoubleClick() {
+        var btn = document.getElementById("delete-btn");
 
-        totalPrice.value = price.value * quantity.value;
+        btn.disabled = true;
     }
 </script>

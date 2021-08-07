@@ -6,7 +6,7 @@
 
     public class AllProductsQueryModel
     {
-        public const int ProductsPerPage = 3;
+        public const int ProductsPerPage = 15;
 
         public string Brand { get; init; }
 

@@ -62,7 +62,15 @@
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
 
-            <input class="btn btn-primary" type="submit" value="Save" />
+            <input class="btn btn-primary" id="save-btn" onclick="preventDoubleClick()" type="submit" value="Save" />
         </form>
     </div>
 </div>
+
+<script>
+    function preventDoubleClick() {
+        var btn = document.getElementById("save-btn");
+
+        btn.disabled = true;
+    }
+</script>

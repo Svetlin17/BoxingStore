@@ -67,9 +67,11 @@
         {
             var cartProduct = this.data.CartProducts.Find(id);
 
-            this.data.CartProducts.Remove(cartProduct);
-
-            this.data.SaveChanges();
+            if (cartProduct != null)
+            {
+                this.data.CartProducts.Remove(cartProduct);
+                this.data.SaveChanges();
+            }
 
             return RedirectToAction(nameof(Index));
         }
