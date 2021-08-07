@@ -13,7 +13,7 @@
     public class ProductService : IProductService
     {
         private readonly BoxingStoreDbContext data;
-        private IConfigurationProvider mapper;
+        private readonly IConfigurationProvider mapper;
 
         public ProductService(BoxingStoreDbContext data, IMapper mapper)
         { 

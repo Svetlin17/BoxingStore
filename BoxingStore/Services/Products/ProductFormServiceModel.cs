@@ -21,13 +21,13 @@ namespace BoxingStore.Services.Products
         public double Price { get; init; }
 
         [ProductSizeAttribute(ErrorMessage = ProductQuantityErrMsg)]
-        public int QuantityS { get; init; }
+        public int QuantityS { get; set; }
 
         [ProductSizeAttribute(ErrorMessage = ProductQuantityErrMsg)]
-        public int QuantityM { get; init; }
+        public int QuantityM { get; set; }
 
         [ProductSizeAttribute(ErrorMessage = ProductQuantityErrMsg)]
-        public int QuantityL { get; init; }
+        public int QuantityL { get; set; }
 
         //public ICollection<ProductSizeQuantity> ProductSizeQuantities { get; set; }
 

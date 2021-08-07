@@ -1,5 +1,6 @@
 ﻿namespace BoxingStore.Controllers
 {
+    using AutoMapper;
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
@@ -8,8 +9,8 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Security.Claims;
+    using System.Linq;
 
     using static Data.DataConstants;
 
@@ -17,11 +18,13 @@
     {
         private readonly IProductService products;
         private readonly BoxingStoreDbContext data;
+        private readonly IMapper mapper;
 
-        public ProductsController(IProductService products, BoxingStoreDbContext data)
+        public ProductsController(IProductService products, BoxingStoreDbContext data, IMapper mapper)
         {
             this.products = products;
             this.data = data;
+            this.mapper = mapper;
         }
 
         public IActionResult All([FromQuery] AllProductsQueryModel query)
@@ -105,19 +108,22 @@
 
             ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
 
-            return View(new ProductFormServiceModel
-            {
-                Brand = product.Brand,
-                Name = product.Name,
-                ImageUrl = product.ImageUrl,
-                Description = product.Description,
-                Price = product.Price,
-                CategoryId = product.CategoryId,
-                Categories = this.products.AllCategories(),
-                QuantityS = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity,
-                QuantityM = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.M).FirstOrDefault().Quantity,
-                QuantityL = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.L).FirstOrDefault().Quantity,
-            });
+            var productForm = this.mapper.Map<ProductFormServiceModel>(product);
+
+            //shound be "set", not "init"
+            productForm.Categories = this.products.AllCategories(); 
+            productForm.QuantityS = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity;
+            productForm.QuantityM = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.M).FirstOrDefault().Quantity;
+            productForm.QuantityL = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.L).FirstOrDefault().Quantity;
+
+            return View(productForm);
+
+            //return View(new ProductFormServiceModel
+            //{
+            //    Brand = product.Brand,
+            //    Categories = this.products.AllCategories(),
+            //    QuantityS = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity,
+            //});
         }
 
         [HttpPost]

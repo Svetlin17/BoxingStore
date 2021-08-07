@@ -9,6 +9,8 @@
         public MappingProfile()
         {
             this.CreateMap<Product, LatestProductServiceModel>();
+
+            this.CreateMap<ProductDetailsServiceModel, ProductFormServiceModel>();
         }
     }
 }
