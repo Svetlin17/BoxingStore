@@ -14,5 +14,6 @@
         public const double ProductPriceMin = 0.01;
         public const string ProductQuantityErrMsg = "Quantity should not be negative";
         public const string ProductPriceErrMsg = "Price should be more than 0$";
+        public const string AllSizesAreZeroErrMsg = "Quantity cannot be 0 for all sizes";
     }
 }

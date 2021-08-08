@@ -13,6 +13,7 @@
     using System.Linq;
 
     using static Data.DataConstants;
+    using System;
 
     public class ProductsController : Controller
     {
@@ -70,6 +71,11 @@
                 this.ModelState.AddModelError(nameof(product.Name), "A product with that name already exists.");
 
                 return View(product);
+            }
+
+            if (product.QuantityS + product.QuantityM + product.QuantityL < 1)
+            {
+                this.ModelState.AddModelError("allSizesAreZero", AllSizesAreZeroErrMsg);
             }
 
             if (!ModelState.IsValid)
