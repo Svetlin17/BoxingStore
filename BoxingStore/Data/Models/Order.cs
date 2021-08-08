@@ -36,6 +36,6 @@
 
         public User User { get; set; }
 
-        public virtual ICollection<OrderProduct> OrderProducts { get; set; }
+        public ICollection<OrderProduct> OrderProducts { get; set; }
     }
 }

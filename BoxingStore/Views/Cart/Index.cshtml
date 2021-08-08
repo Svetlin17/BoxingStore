@@ -44,7 +44,8 @@ else
                 <h3>Total Price:</h3>
                 <input asp-for="TotalPrice" readonly class="form-control-plaintext form-control-lg" />
             </div>
-        </div>
+            <a asp-controller="Orders" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary text-uppercase">Order</a>
+        </div>        
         <br />
         <br />
     </div>

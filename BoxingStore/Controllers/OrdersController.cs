@@ -13,6 +13,11 @@
     using System.Linq;
     using BoxingStore.Models.Orders;
     using BoxingStore.Services.Orders;
+    using BoxingStore.Data.Models.Enums;
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
 
     public class OrdersController : Controller
     {
@@ -35,6 +40,23 @@
             query.Orders = queryResult.Orders;
 
             return View(query);
+        }
+
+        public IActionResult Create(int id)
+        {
+            var cart = this.data.Carts.Find(id); //TODO move to a cart or order service
+
+            var orderProducts = new List<OrderProduct>();
+
+            var order = new Order();
+
+            foreach (var item in cart.CartProducts)
+            {
+                //orderProducts.Add(new  { });
+            }
+            //query.Orders = queryResult.Orders;
+
+            return View();
         }
     }
 }
