@@ -1,36 +1,42 @@
 ﻿namespace BoxingStore.Controllers
 {
-    using System.Diagnostics;
-    using BoxingStore.Models;
-    using BoxingStore.Models.Home;
-    using BoxingStore.Services.Statistics;
+    using System;
+    using System.Linq;
+    using System.Collections.Generic;
     using BoxingStore.Services.Products;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
-    using System.Linq;
+    using Microsoft.Extensions.Caching.Memory;
 
     public class HomeController : Controller
     {
         private readonly IProductService products;
-        private readonly IStatisticsService statistics;
+        private readonly IMemoryCache cache;
 
-        public HomeController(IProductService products, IStatisticsService statistics)
+        public HomeController(IProductService products, IMemoryCache cache)
         {
             this.products = products;
-            this.statistics = statistics;
+            this.cache = cache;
         }
 
         public IActionResult Index()
         {
-            List<LatestProductServiceModel> latestProducts = this.products.Latest().ToList();
+            const string latestProductsCacheKey = "LatestProductsCacheKey";
 
-            var totalStatistics = this.statistics.Total();
+            var latestProducts = this.cache.Get<List<LatestProductServiceModel>>(latestProductsCacheKey);
 
-            return View(new IndexViewModel
+            if (latestProducts == null) //take from DB only if there is no cache
             {
-                TotalProducts = totalStatistics.TotalProducts,
-                Products = latestProducts
-            });
+                latestProducts = this.products
+                   .Latest()
+                   .ToList();
+
+                var cacheOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(TimeSpan.FromMinutes(15)); //save data in the cache for 15 mins
+
+                this.cache.Set(latestProductsCacheKey, latestProducts, cacheOptions);
+            }
+
+            return View(latestProducts);
         }
 
         public IActionResult Error() => View();
