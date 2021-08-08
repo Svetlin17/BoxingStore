@@ -1,9 +1,5 @@
 ﻿namespace BoxingStore.Services.Products
 {
-    using BoxingStore.Data.Models;
-    using BoxingStore.Data.Models.Enums;
-    using System.Collections.Generic;
-
     public class ProductServiceModel
     {
         public int Id { get; init; }

@@ -25,7 +25,6 @@
                     
         public DbSet<OrderProduct> OrderProducts { get; init; }
 
-
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder
