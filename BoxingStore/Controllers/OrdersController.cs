@@ -2,20 +2,11 @@
 {
     using AutoMapper;
     using BoxingStore.Data;
-    using BoxingStore.Data.Models;
-    using BoxingStore.Data.Models.Enums;
-    using BoxingStore.Models.Products;
-    using BoxingStore.Services.Products;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
     using System.Security.Claims;
-    using System.Linq;
     using BoxingStore.Models.Orders;
     using BoxingStore.Services.Orders;
-    using System;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
     using BoxingStore.Services.CartService;
 
     public class OrdersController : Controller
@@ -35,11 +26,14 @@
 
         public IActionResult Index([FromQuery] AllOrdersQueryModel query)
         {
-            var queryResult = this.orders.All();
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userIsAdmin = this.User.IsInRole("Administrator");
+
+            var queryResult = this.orders.All(userId, userIsAdmin);
 
             query.Orders = queryResult.Orders;
 
-            return View(query);
+            return this.View(query);
         }
 
         [Authorize]
@@ -65,23 +59,42 @@
 
             var orderId = this.orders.Create(orderModel, currentUserId, currentUserCart.Id);
 
-            return RedirectToAction(nameof(Info), orderId);
+            return RedirectToAction(nameof(Index));
         }
 
         [Authorize]
         public IActionResult Info(int id)
         {
-            var orderData = this.data.Orders.Find(id); //this.orders.FindById(orderId);
+            var orderData = this.data.Orders.Find(id); //TODO put in service
+
+            var orderProducts = this.orders.GetOrderProductsForOrder(id);
 
             return View(new OrderFormServiceModel 
             {
+                IsCompleated = orderData.IsCompleated,
                 ClientAddress = orderData.ClientAddress,
                 ClientEmail = orderData.ClientEmail,
                 ClientName = orderData.ClientName,
                 ClientPhoneNumber = orderData.ClientPhoneNumber,
-                OrderProducts = orderData.OrderProducts,
+                OrderProducts = orderProducts,
                 TotalPrice = orderData.TotalPrice
             });
+        }
+
+        [Authorize(Roles = WebConstants.AdministratorRoleName)]
+        public IActionResult Compleate(int id)
+        {
+            this.orders.CompleateOrder(id);
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        [Authorize(Roles = WebConstants.AdministratorRoleName)]
+        public IActionResult Delete(int id)
+        {
+            this.orders.DeleteOrder(id);
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
