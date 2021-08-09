@@ -58,16 +58,25 @@
             });
         }
 
-        public IActionResult EditSize(int id, ProductSize size)
+        public IActionResult EditSize(int id, ProductSize size) //put in cart service
         {
-            this.data.CartProducts.Find(id).Size = size;
+            var cartProduct = this.data.CartProducts.Find(id);
+
+            cartProduct.Size = size;
 
             this.data.SaveChanges();
+
+            var maxQuantityOfNewSize = this.products.MaxQuantityAvailable(cartProduct.ProductId, cartProduct.Size);
+
+            if (cartProduct.Quantity > maxQuantityOfNewSize)
+            {
+                EditQuantity(cartProduct.Id, maxQuantityOfNewSize);
+            }
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult EditQuantity(int id, int quantity)
+        public IActionResult EditQuantity(int id, int quantity) //put in cart service
         {
             this.data.CartProducts.Find(id).Quantity = quantity;
 
