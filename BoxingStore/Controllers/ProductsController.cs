@@ -14,16 +14,19 @@
 
     using static Data.DataConstants;
     using System;
+    using BoxingStore.Services.CartService;
 
     public class ProductsController : Controller
     {
         private readonly IProductService products;
+        private readonly ICartService carts;
         private readonly BoxingStoreDbContext data;
         private readonly IMapper mapper;
 
-        public ProductsController(IProductService products, BoxingStoreDbContext data, IMapper mapper)
+        public ProductsController(IProductService products, ICartService carts, BoxingStoreDbContext data, IMapper mapper)
         {
             this.products = products;
+            this.carts = carts;
             this.data = data;
             this.mapper = mapper;
         }
@@ -85,22 +88,21 @@
                 return View(product); //if there's wrong input refresh the page, valid data remains filled
             }
 
-            this.data.Products.Add(this.products.Create(product, convertedName));
-            this.data.SaveChanges();
+            var productId = this.products.Create(product, convertedName);
 
             if (product.QuantityS >= ProductQuantityMin)
             {
-                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.S, product.QuantityS, convertedName));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.S, product.QuantityS, productId));
                 this.data.SaveChanges();
             }
             if (product.QuantityM >= ProductQuantityMin)
             {
-                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.M, product.QuantityM, convertedName));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.M, product.QuantityM, productId));
                 this.data.SaveChanges();
             }
             if (product.QuantityL >= ProductQuantityMin)
             {
-                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.L, product.QuantityL, convertedName));
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.L, product.QuantityL, productId));
                 this.data.SaveChanges();
             }
 
@@ -218,11 +220,11 @@
         {
             var product = this.products.FindById(productModel.Id);
 
-            var currentUserCartId = this.data.Users.Find(this.User.FindFirstValue(ClaimTypes.NameIdentifier)).CartId;
+            var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
             var cartProduct = new CartProduct
             {
-                CartId = currentUserCartId,
+                CartId = currentUserCart.Id,
                 ProductId = productModel.Id,
                 Quantity = productModel.Quantity,
                 Size = productModel.Size
@@ -250,9 +252,9 @@
             });
         }
 
-        private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, string convertedName)
+        private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, int productId)
         {
-            var product = this.data.Products.Where(x => x.ConvertedName == convertedName).FirstOrDefault();
+            var product = this.data.Products.Find(productId);
 
             var productData = new ProductSizeQuantity
             {

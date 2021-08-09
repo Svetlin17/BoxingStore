@@ -20,7 +20,7 @@
 
         ProductDetailsServiceModel FindByConvertedName(string convertedName);
 
-        Product Create(ProductFormServiceModel product, string convertedName);
+        int Create(ProductFormServiceModel product, string convertedName);
         bool Edit(
                 int id,
                 string brand,

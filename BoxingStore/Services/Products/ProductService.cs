@@ -21,7 +21,7 @@
             this.mapper = mapper.ConfigurationProvider;
         } 
 
-        public Product Create(ProductFormServiceModel product, string convertedName)
+        public int Create(ProductFormServiceModel product, string convertedName)
         {
             var productData = new Product
             {
@@ -34,7 +34,10 @@
                 CategoryId = product.CategoryId
             };
 
-            return productData;
+            this.data.Products.Add(productData);
+            this.data.SaveChanges();
+
+            return productData.Id;
         }
 
         public bool Edit(int id, string brand, string name, string description, string imageUrl, double price, int categoryId, string convertedName, int quantityS, int quantityM, int quantityL)

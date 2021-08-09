@@ -1,8 +1,8 @@
 ﻿namespace BoxingStore.Models
 {
     using BoxingStore.Data.Models.Enums;
-    
-    public class CartProductsQueryModel
+
+    public class OrderProductsQueryModel
     {
         public int Id { get; init; }
 

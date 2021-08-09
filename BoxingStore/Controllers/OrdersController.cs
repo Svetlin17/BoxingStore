@@ -13,27 +13,27 @@
     using System.Linq;
     using BoxingStore.Models.Orders;
     using BoxingStore.Services.Orders;
-    using BoxingStore.Data.Models.Enums;
     using System;
-    using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
+    using BoxingStore.Services.CartService;
 
     public class OrdersController : Controller
     {
         private readonly IOrderService orders;
+        private readonly ICartService carts;
         private readonly BoxingStoreDbContext data;
         private readonly IMapper mapper;
 
-        public OrdersController(IOrderService orders
-            , BoxingStoreDbContext data, IMapper mapper)
+        public OrdersController(IOrderService orders, ICartService carts, BoxingStoreDbContext data, IMapper mapper)
         {
             this.orders = orders;
+            this.carts = carts;
             this.data = data;
             this.mapper = mapper;
         }
 
-        public IActionResult All([FromQuery] AllOrdersQueryModel query)
+        public IActionResult Index([FromQuery] AllOrdersQueryModel query)
         {
             var queryResult = this.orders.All();
 
@@ -42,21 +42,46 @@
             return View(query);
         }
 
-        public IActionResult Create(int id)
+        [Authorize]
+        public IActionResult Create()
         {
-            var cart = this.data.Carts.Find(id); //TODO move to a cart or order service
+            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var orderProducts = new List<OrderProduct>();
-
-            var order = new Order();
-
-            foreach (var item in cart.CartProducts)
+            return this.View(new OrderFormServiceModel
             {
-                //orderProducts.Add(new  { });
-            }
-            //query.Orders = queryResult.Orders;
+                ClientName = this.data.Users.Find(userId).FullName, //TODO make IUserService and UserService
+                ClientEmail = this.data.Users.Find(userId).Email,
+                TotalPrice = this.carts.GetCartTotalPrice(this.carts.GetUserCart(userId).Id)
+            });
+        }
 
-            return View();
+        [HttpPost]
+        [Authorize]
+        public IActionResult Create(OrderFormServiceModel orderModel)
+        {
+            var currentUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var currentUserCart = this.carts.GetUserCart(currentUserId);
+
+            var orderId = this.orders.Create(orderModel, currentUserId, currentUserCart.Id);
+
+            return RedirectToAction(nameof(Info), orderId);
+        }
+
+        [Authorize]
+        public IActionResult Info(int id)
+        {
+            var orderData = this.data.Orders.Find(id); //this.orders.FindById(orderId);
+
+            return View(new OrderFormServiceModel 
+            {
+                ClientAddress = orderData.ClientAddress,
+                ClientEmail = orderData.ClientEmail,
+                ClientName = orderData.ClientName,
+                ClientPhoneNumber = orderData.ClientPhoneNumber,
+                OrderProducts = orderData.OrderProducts,
+                TotalPrice = orderData.TotalPrice
+            });
         }
     }
 }

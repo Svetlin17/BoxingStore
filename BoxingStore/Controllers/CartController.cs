@@ -3,6 +3,7 @@
     using BoxingStore.Data;
     using BoxingStore.Models;
     using BoxingStore.Models.Cart;
+    using BoxingStore.Services.CartService;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
@@ -10,10 +11,12 @@
 
     public class CartController : Controller
     {
+        private readonly ICartService carts;
         private readonly BoxingStoreDbContext data;
 
-        public CartController(BoxingStoreDbContext data)
+        public CartController(ICartService carts, BoxingStoreDbContext data)
         {
+            this.carts = carts;
             this.data = data;
         }
 
@@ -24,8 +27,6 @@
             var cart = this.data.Carts.Find(currentCartId);
 
             var cartProducts = new List<CartProductsQueryModel>();
-
-            var cartTotalPrice = 0.0;
 
             foreach (var cartProduct in this.data.CartProducts.Where(x => x.CartId == cart.Id).ToList())
             {
@@ -42,15 +43,13 @@
                     Price = product.Price,
                     ProductTotalPrice = product.Price * cartProduct.Quantity //the totalprice of 1 single product in the cart
                 });
-
-                cartTotalPrice += product.Price * cartProduct.Quantity;
             }
 
             return View(new CartViewModel
             {
                 Id = cart.Id,
                 CartProducts = cartProducts,
-                TotalPrice = cartTotalPrice
+                TotalPrice = this.carts.GetCartTotalPrice(cart.Id)
             });
         }
 

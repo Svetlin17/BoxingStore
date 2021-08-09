@@ -8,11 +8,16 @@
 
     public class Order
     {
+        public Order()
+        {
+            this.IsCompleated = false;
+            this.OrderDate = DateTime.Now;
+        }
+
         public int Id { get; set; }
 
         [Required]
-        [Column(TypeName = "nvarchar(3)")]  //store enum in DB as a string
-        public OrderStatus Status { get; set; }
+        public bool IsCompleated { get; set; }
 
         [Required]
         public DateTime? OrderDate { get; set; }
@@ -36,6 +41,6 @@
 
         public User User { get; set; }
 
-        public ICollection<OrderProduct> OrderProducts { get; set; }
+        public IEnumerable<OrderProduct> OrderProducts { get; set; }
     }
 }
