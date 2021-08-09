@@ -199,6 +199,13 @@
             .Categories
             .Any(p => p.Id == categoryId);
 
+        public int MaxQuantityAvailable(int productId, ProductSize size)
+        => this.data
+            .ProductSizeQuantities
+            .Where(p => p.ProductId == productId && p.Size == size)
+            .FirstOrDefault()
+            .Quantity;
+
         public string CreateConvertedName(ProductFormServiceModel product)
         {
             string convertedName = product.Brand.ToLower();

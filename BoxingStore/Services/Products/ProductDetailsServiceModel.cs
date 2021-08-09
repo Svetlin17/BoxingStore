@@ -1,5 +1,4 @@
-﻿
-namespace BoxingStore.Services.Products
+﻿namespace BoxingStore.Services.Products
 {
     using BoxingStore.Data.Models;
     using System.Collections.Generic;

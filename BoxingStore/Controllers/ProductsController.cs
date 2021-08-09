@@ -42,7 +42,7 @@
 
             var productBrands = this.products.BrandsSorting();
 
-            query.Brands = productBrands; 
+            query.Brands = productBrands;
             query.TotalProducts = queryResult.TotalProducts;
             query.Products = queryResult.Products;
 
@@ -119,7 +119,7 @@
             var productForm = this.mapper.Map<ProductFormServiceModel>(product);
 
             //shound be "set", not "init"
-            productForm.Categories = this.products.AllCategories(); 
+            productForm.Categories = this.products.AllCategories();
             productForm.QuantityS = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity;
             productForm.QuantityM = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.M).FirstOrDefault().Quantity;
             productForm.QuantityL = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.L).FirstOrDefault().Quantity;
@@ -192,7 +192,6 @@
             return RedirectToAction(nameof(All));
         }
 
-
         public IActionResult Details(int id)
         {
             var product = this.products.FindById(id);
@@ -218,20 +217,34 @@
         [HttpPost]
         public IActionResult Details(ProductSizeQuantityServiceModel productModel)
         {
+            var quantityAvailable = this.products.MaxQuantityAvailable(productModel.Id, productModel.Size);
+
             var product = this.products.FindById(productModel.Id);
 
-            var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+            var successfulOrder = true;
 
-            var cartProduct = new CartProduct
+            if (productModel.Quantity > quantityAvailable)
             {
-                CartId = currentUserCart.Id,
-                ProductId = productModel.Id,
-                Quantity = productModel.Quantity,
-                Size = productModel.Size
-            };
+                this.ModelState.AddModelError(nameof(productModel.Quantity),
+                    $"The quantity is unvailable. There are only {quantityAvailable} items with size {productModel.Size} left.");
 
-            this.data.CartProducts.Add(cartProduct);
-            this.data.SaveChanges();
+                successfulOrder = false;
+            }
+            else
+            {
+                var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+
+                var cartProduct = new CartProduct
+                {
+                    CartId = currentUserCart.Id,
+                    ProductId = productModel.Id,
+                    Quantity = productModel.Quantity,
+                    Size = productModel.Size
+                };
+
+                this.data.CartProducts.Add(cartProduct);
+                this.data.SaveChanges();
+            }
 
             var productCategory = this.products.ProductCategory(product.CategoryName);
 
@@ -248,8 +261,8 @@
                 CategoryId = productCategory.Id,
                 CategoryName = product.CategoryName,
                 SizeQuantities = allSizesForCurrentProduct,
-                NoteAfterOrder = true  //after adding in DB 
-            });
+                NoteAfterOrder = successfulOrder  //after adding in DB 
+        });
         }
 
         private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, int productId)

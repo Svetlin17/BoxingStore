@@ -34,13 +34,16 @@
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="action text-center">
-                @if (SignInManager.IsSignedIn(User))
+                @if (!User.IsAdmin())
                 {
-                    <button type="submit" class="btn btn-primary">Add to cart</button>
-                }
-                else
-                {
-                    <p class="lead">Register or login to buy the product</p>
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <button type="submit" class="btn btn-primary">Add to cart</button>
+                    }
+                    else
+                    {
+                        <p class="lead">Register or login to buy the product</p>
+                    }
                 }
             </div>
         </form>

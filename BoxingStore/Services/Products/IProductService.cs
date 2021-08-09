@@ -2,6 +2,7 @@
 {
     using System.Collections.Generic;
     using BoxingStore.Data.Models;
+    using BoxingStore.Data.Models.Enums;
     using BoxingStore.Models;
     using BoxingStore.Service.Products;
 
@@ -45,5 +46,7 @@
         bool CategoryExists(int categoryId);
 
         string CreateConvertedName(ProductFormServiceModel product);
+
+        int MaxQuantityAvailable(int id, ProductSize size);
     }
 }

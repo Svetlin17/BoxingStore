@@ -2,6 +2,7 @@
 
 <div class="d-flex justify-content-between align-items-center mt-3 p-2 items rounded">
     <div scope="col" width="260" class="d-flex flex-row">
+        <input asp-for="Id" id="cartProductId" type="hidden" />
         <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">
             <img src="@Model.ProductImageUrl" width="50" height="50">
         </a>
@@ -16,24 +17,25 @@
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
     <div class="d-flex flex-row align-items-center">
-        <select asp-for="Size" class="form-control col-md-1 align-items-center">
-            <option>S</option>
-            <option>M</option>
-            <option>L</option>
+        <select asp-for="Size" class="form-control col-md-2" id="size"
+                onchange="changeSize(this,'@Url.Action("EditSize", "Cart")')">
+            <option value="S">S</option>
+            <option value="M">M</option>
+            <option value="L">L</option>
         </select>
         <span asp-validation-for="Size" class="text-danger"></span>
         <div class="d-block ml-5 font-weight-bold">
-            <a asp-controller="Cart" 
-               asp-action="Edit" 
-               asp-route-id="@Model.Id" 
-               asp-route-quantity="@(Model.Quantity - 1)" 
-               class="btn btn-outline-secondary btn-sm @(Model.Quantity == 1 ? "disabled" : "" )" >-</a>
-            <input asp-for="Quantity" id="quantity" readonly class="form-control"/>
-            <a asp-controller="Cart" 
-               asp-action="Edit"
+            <a asp-controller="Cart"
+               asp-action="EditQuantity"
                asp-route-id="@Model.Id"
-               asp-route-quantity="@(Model.Quantity + 1)" 
-               class="btn btn-outline-secondary btn-sm">+</a>
+               asp-route-quantity="@(Model.Quantity - 1)"
+               class="btn btn-outline-secondary btn-sm @(Model.Quantity == 1 ? "disabled" : "" )">-</a>
+            <input asp-for="Quantity" id="quantity" readonly class="form-control" />
+            <a asp-controller="Cart"
+               asp-action="EditQuantity"
+               asp-route-id="@Model.Id"
+               asp-route-quantity="@(Model.Quantity + 1)"
+               class="btn btn-outline-secondary btn-sm @(Model.Quantity == Model.MaxQuantityAvailable ? "disabled" : "" )">+</a>
         </div>
         <div class="d-block ml-5 font-weight-bold">
             <input asp-for="ProductTotalPrice" id="totalPrice" readonly class="form-control" />
@@ -55,5 +57,12 @@
         var btn = document.getElementById("delete-btn");
 
         btn.disabled = true;
+    }
+
+    function changeSize(item, baseUrl) {
+        var size = document.getElementById("size");
+        var cpId = document.getElementById("cartProductId");
+
+        window.location.href = baseUrl + '?id=' + cpId.value + '&size=' + size.value;
     }
 </script>

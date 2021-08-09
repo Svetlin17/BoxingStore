@@ -38,7 +38,10 @@
             this.data.SaveChanges();
 
             CreateOrderProductsForOrder(orderData.Id, cartId);
+            RemovedOrderedProductSizeQuantites(orderData.Id);
+
             orderData.TotalPrice = GetOrderTotalPrice(orderData.Id);
+
             this.data.SaveChanges();
 
             //TODO call IOrderService to remove from ProductSizeQuantities the ordered quantities
@@ -94,7 +97,9 @@
         {
             var orderTotalPrice = 0.0;
 
-            foreach (var orderProduct in this.data.OrderProducts.Where(x => x.OrderId == orderId).ToList())
+            var orderProducts = this.data.OrderProducts.Where(x => x.OrderId == orderId).ToList();
+
+            foreach (var orderProduct in orderProducts)
             {
                 var product = this.data.Products.Find(orderProduct.ProductId);
 
@@ -128,24 +133,6 @@
             return orderProducts;
         }
 
-        private void CreateOrderProductsForOrder(int orderId, int cartId)
-        {
-            foreach (var cartProduct in this.data.CartProducts.Where(c => c.CartId == cartId))
-            {
-                var orderProduct = new OrderProduct
-                {
-                    OrderId = orderId,
-                    ProductId = cartProduct.ProductId,
-                    Quantity = cartProduct.Quantity,
-                    Size = cartProduct.Size
-                };
-
-                this.data.OrderProducts.Add(orderProduct);
-                
-            }
-            this.data.SaveChanges();
-        }
-
         public void CompleateOrder(int id)
         {
             var orderData = this.data.Orders.Find(id);
@@ -165,6 +152,38 @@
 
                 this.data.SaveChanges();
             }
+        }
+
+        private void CreateOrderProductsForOrder(int orderId, int cartId)
+        {
+            var cartProducts = this.data.CartProducts.Where(c => c.CartId == cartId);
+
+            foreach (var cartProduct in cartProducts)
+            {
+                var orderProduct = new OrderProduct //analogically
+                {
+                    OrderId = orderId,
+                    ProductId = cartProduct.ProductId,
+                    Quantity = cartProduct.Quantity,
+                    Size = cartProduct.Size
+                };
+
+                this.data.OrderProducts.Add(orderProduct);
+                this.data.CartProducts.Remove(cartProduct);
+            }
+            this.data.SaveChanges();
+        }
+        private void RemovedOrderedProductSizeQuantites(int orderId)
+        {
+            var orderProducts = this.data.OrderProducts.Where(x => x.OrderId == orderId).ToList();
+
+            foreach (var orderProduct in orderProducts)
+            {
+                var psq = this.data.ProductSizeQuantities.Where(p => p.ProductId == orderProduct.ProductId && p.Size == orderProduct.Size).FirstOrDefault();
+
+                psq.Quantity -= orderProduct.Quantity;
+            }
+            this.data.SaveChanges();
         }
     }
 }

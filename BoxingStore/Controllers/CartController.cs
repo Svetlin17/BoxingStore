@@ -1,9 +1,11 @@
 ﻿namespace BoxingStore.Controllers
 {
     using BoxingStore.Data;
+    using BoxingStore.Data.Models.Enums;
     using BoxingStore.Models;
     using BoxingStore.Models.Cart;
     using BoxingStore.Services.CartService;
+    using BoxingStore.Services.Products;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
@@ -11,11 +13,13 @@
 
     public class CartController : Controller
     {
+        private readonly IProductService products;
         private readonly ICartService carts;
         private readonly BoxingStoreDbContext data;
 
-        public CartController(ICartService carts, BoxingStoreDbContext data)
+        public CartController(IProductService products, ICartService carts, BoxingStoreDbContext data)
         {
+            this.products = products;
             this.carts = carts;
             this.data = data;
         }
@@ -41,7 +45,8 @@
                     ProductName = product.Brand + " " + product.Name,
                     ProductId = product.Id,
                     Price = product.Price,
-                    ProductTotalPrice = product.Price * cartProduct.Quantity //the totalprice of 1 single product in the cart
+                    ProductTotalPrice = product.Price * cartProduct.Quantity, //the totalprice of 1 single product in the cart
+                    MaxQuantityAvailable = this.products.MaxQuantityAvailable(product.Id, cartProduct.Size)
                 });
             }
 
@@ -53,7 +58,16 @@
             });
         }
 
-        public IActionResult Edit(int id, int quantity)
+        public IActionResult EditSize(int id, ProductSize size)
+        {
+            this.data.CartProducts.Find(id).Size = size;
+
+            this.data.SaveChanges();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+        public IActionResult EditQuantity(int id, int quantity)
         {
             this.data.CartProducts.Find(id).Quantity = quantity;
 
