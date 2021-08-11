@@ -47,6 +47,6 @@
 
         string CreateConvertedName(ProductFormServiceModel product);
 
-        int MaxQuantityAvailable(int id, ProductSize size);
+        int MaxQuantityAvailable(int productId, ProductSize size);
     }
 }

@@ -3,6 +3,7 @@
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Models;
+    using BoxingStore.Services.Products;
     using System.Collections.Generic;
     using System.Linq;
 

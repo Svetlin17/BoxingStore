@@ -234,7 +234,7 @@
             {
                 var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                bool cartProductAlreadyExists = this.data.CartProducts.Any(cp => cp.CartId == currentUserCart.Id && cp.ProductId == productModel.Id && cp.Size == productModel.Size);
+                bool cartProductAlreadyExists = this.carts.IsThisProductWithThisSizeInCart(currentUserCart.Id, productModel.Id, productModel.Size);
 
                 if (cartProductAlreadyExists)
                 {

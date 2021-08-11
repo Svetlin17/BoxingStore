@@ -2,6 +2,8 @@
 {
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
+    using BoxingStore.Data.Models.Enums;
+    using System.Security.Claims;
     using System.Linq;
 
     public class CartService : ICartService
@@ -34,6 +36,11 @@
             }
 
             return cartTotalPrice;
+        }
+
+        public bool IsThisProductWithThisSizeInCart(int cartId, int productId, ProductSize size)
+        {
+            return this.data.CartProducts.Any(cp => cp.CartId == cartId && cp.ProductId == productId && cp.Size == size);
         }
     }
 }

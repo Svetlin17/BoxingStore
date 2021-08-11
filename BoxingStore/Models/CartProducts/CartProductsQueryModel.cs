@@ -1,7 +1,9 @@
 ﻿namespace BoxingStore.Models
 {
+    using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
-    
+    using System.Collections.Generic;
+
     public class CartProductsQueryModel
     {
         public int Id { get; init; }
@@ -21,5 +23,7 @@
         public double Price { get; set; }
 
         public double ProductTotalPrice { get; set; }
+
+        public ICollection<ProductSizeQuantity> SizeQuantities { get; set; }
     }
 }

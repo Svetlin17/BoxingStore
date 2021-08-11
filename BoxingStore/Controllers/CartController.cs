@@ -10,6 +10,7 @@
     using System.Collections.Generic;
     using System.Security.Claims;
     using System.Linq;
+    using BoxingStore.Data.Models;
 
     public class CartController : Controller
     {
@@ -24,7 +25,7 @@
             this.data = data;
         }
 
-        public IActionResult Index()
+        public IActionResult Index() //TODO here I change the size when another person ordered
         {
             var currentCartId = this.data.Users.Find(this.User.FindFirstValue(ClaimTypes.NameIdentifier)).CartId;
 
@@ -34,7 +35,24 @@
 
             foreach (var cartProduct in this.data.CartProducts.Where(x => x.CartId == cart.Id).ToList())
             {
+                //If someone else has ordered the quantity is reduced to max quantity------------------
+                int maxQuantity = this.products.MaxQuantityAvailable(cartProduct.ProductId, cartProduct.Size);
+
+                if (maxQuantity == 0)
+                {
+                    this.data.CartProducts.Remove(cartProduct);
+
+                    continue;
+                }
+                if (cartProduct.Quantity > maxQuantity)
+                {
+                    cartProduct.Quantity = maxQuantity;
+                }
+                //-------------------------------------------------------------------------------------
+
                 var product = this.data.Products.Find(cartProduct.ProductId);
+
+                ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
 
                 cartProducts.Add(new CartProductsQueryModel
                 {
@@ -46,9 +64,11 @@
                     ProductId = product.Id,
                     Price = product.Price,
                     ProductTotalPrice = product.Price * cartProduct.Quantity, //the totalprice of 1 single product in the cart
-                    MaxQuantityAvailable = this.products.MaxQuantityAvailable(product.Id, cartProduct.Size)
+                    MaxQuantityAvailable = this.products.MaxQuantityAvailable(product.Id, cartProduct.Size),
+                    SizeQuantities = allSizesForCurrentProduct
                 });
             }
+            this.data.SaveChanges();
 
             return View(new CartViewModel
             {
@@ -62,15 +82,27 @@
         {
             var cartProduct = this.data.CartProducts.Find(id);
 
-            cartProduct.Size = size;
+            var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-            this.data.SaveChanges();
+            bool cartProductAlreadyExists = this.carts
+                                    .IsThisProductWithThisSizeInCart(currentUserCart.Id, cartProduct.ProductId, size);
 
-            var maxQuantityOfNewSize = this.products.MaxQuantityAvailable(cartProduct.ProductId, cartProduct.Size);
-
-            if (cartProduct.Quantity > maxQuantityOfNewSize)
+            if (cartProductAlreadyExists)
             {
-                EditQuantity(cartProduct.Id, maxQuantityOfNewSize);
+                //TODO $"You already have this product with this size in your cart.");
+            }
+            else
+            {
+                cartProduct.Size = size;
+
+                this.data.SaveChanges();
+
+                var maxQuantityOfNewSize = this.products.MaxQuantityAvailable(cartProduct.ProductId, cartProduct.Size);
+
+                if (cartProduct.Quantity > maxQuantityOfNewSize)
+                {
+                    EditQuantity(cartProduct.Id, maxQuantityOfNewSize);
+                }
             }
 
             return RedirectToAction(nameof(Index));

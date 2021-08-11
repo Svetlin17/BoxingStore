@@ -19,9 +19,18 @@
     <div class="d-flex flex-row align-items-center">
         <select asp-for="Size" class="form-control col-md-2" id="size"
                 onchange="changeSize(this,'@Url.Action("EditSize", "Cart")')">
-            <option value="S">S</option>
-            <option value="M">M</option>
-            <option value="L">L</option>
+            @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.S).Quantity > 0)
+            {
+                <option>S</option>
+            }
+            @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.M).Quantity > 0)
+            {
+                <option>M</option>
+            }
+            @if (Model.SizeQuantities.FirstOrDefault(x => x.Size == ProductSize.L).Quantity > 0)
+            {
+                <option>L</option>
+            }
         </select>
         <span asp-validation-for="Size" class="text-danger"></span>
         <div class="d-block ml-5 font-weight-bold">
