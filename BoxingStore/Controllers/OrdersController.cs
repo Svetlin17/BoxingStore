@@ -14,14 +14,12 @@
         private readonly IOrderService orders;
         private readonly ICartService carts;
         private readonly BoxingStoreDbContext data;
-        private readonly IMapper mapper;
 
-        public OrdersController(IOrderService orders, ICartService carts, BoxingStoreDbContext data, IMapper mapper)
+        public OrdersController(IOrderService orders, ICartService carts, BoxingStoreDbContext data)
         {
             this.orders = orders;
             this.carts = carts;
             this.data = data;
-            this.mapper = mapper;
         }
 
         public IActionResult Index([FromQuery] AllOrdersQueryModel query)

@@ -5,57 +5,77 @@
 
 <h1>Orders</h1>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>Status</th>
-            <th>Total Price</th>
-            <th>Client Name</th>
-            <th>Client Email</th>
-            <th>Client Phone Number</th>
-            <th>Client Address</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Orders)
-        {
+@if (!Model.Orders.Any())
+{
+<div class="jumbotron">
+    @if (User.IsAdmin())
+    {
+        <h3>There are currently no orders.</h3>
+    }
+    else
+    {
+        <h3>There are currently no orders from you. View the products to buy some!</h3>
+        <hr class="my-4">
+        <p class="lead">
+            <a asp-controller="Products" asp-action="All" class="btn btn-primary btn-lg" role="button">View Products</a>
+        </p>
+    }
+</div>
+}
+else
+{
+    <table class="table">
+        <thead>
             <tr>
-                <td style="color:@(item.IsCompleated ? "red" : "green");">
-                    <b>@(item.IsCompleated ? "Compleated" : "Active")</b>
-                </td>
-                <td>
-                    <b>@Html.DisplayFor(modelItem => item.TotalPrice)$</b>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClientName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClientEmail)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClientPhoneNumber)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ClientAddress)
-                </td>
-                <td>
-                    <a asp-controller="Orders" asp-action="Info" asp-route-id="@item.Id" class="btn btn-primary">Info</a>
-                </td>
-                <td>
-                    @if (User.IsAdmin())
-                    {
-                        @if (!item.IsCompleated)
-                        {
-                            <a asp-controller="Orders" asp-action="Compleate" asp-route-id="@item.Id" class="btn btn-danger">Compleate</a>
-                        }
-                        else
-                        {
-                            <a asp-controller="Orders" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
-                        }
-                    }
-                </td>
+                <th>Status</th>
+                <th>Total Price</th>
+                <th>Client Name</th>
+                <th>Client Email</th>
+                <th>Client Phone Number</th>
+                <th>Client Address</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Orders)
+            {
+                <tr>
+                    <td style="color:@(item.IsCompleated ? "red" : "green");">
+                        <b>@(item.IsCompleated ? "Compleated" : "Active")</b>
+                    </td>
+                    <td>
+                        <b>@Html.DisplayFor(modelItem => item.TotalPrice)$</b>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClientName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClientEmail)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClientPhoneNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ClientAddress)
+                    </td>
+                    <td>
+                        <a asp-controller="Orders" asp-action="Info" asp-route-id="@item.Id" class="btn btn-primary">Info</a>
+                    </td>
+                    <td>
+                        @if (User.IsAdmin())
+                        {
+                            @if (!item.IsCompleated)
+                            {
+                                <a asp-controller="Orders" asp-action="Compleate" asp-route-id="@item.Id" class="btn btn-danger">Compleate</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Orders" asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">Delete</a>
+                            }
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

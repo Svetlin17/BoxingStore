@@ -11,15 +11,11 @@
 
     public class OrderService : IOrderService
     {
-        private readonly IProductService products;
         private readonly BoxingStoreDbContext data;
-        private readonly IConfigurationProvider mapper;
 
-        public OrderService(IProductService products, BoxingStoreDbContext data, IMapper mapper)
+        public OrderService(BoxingStoreDbContext data)
         {
-            this.products = products;
             this.data = data;
-            this.mapper = mapper.ConfigurationProvider;
         }
 
         public int Create(OrderFormServiceModel order, string userId, int cartId)
