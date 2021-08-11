@@ -1,5 +1,3 @@
-using System;
-
 namespace BoxingStore.Models
 {
     public class ErrorViewModel

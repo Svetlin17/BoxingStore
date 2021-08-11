@@ -1,6 +1,5 @@
-﻿namespace BoxingStore.Services.CartService
+﻿namespace BoxingStore.Services.Carts
 {
-    using AutoMapper;
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using System.Linq;
@@ -8,12 +7,10 @@
     public class CartService : ICartService
     {
         private readonly BoxingStoreDbContext data;
-        private readonly IConfigurationProvider mapper;
 
-        public CartService(BoxingStoreDbContext data, IMapper mapper)
+        public CartService(BoxingStoreDbContext data)
         {
             this.data = data;
-            this.mapper = mapper.ConfigurationProvider;
         }
 
         public Cart GetUserCart(string userId)

@@ -32,9 +32,16 @@
                     <h3 class="product-title">@Model.Brand @Model.Name</h3>
                     <p class="product-description">@Model.Description</p>
                     <h2 class="price">Price: <span>@Model.Price</span>$</h2>
-                    <div>
-                        <partial name="_AddProductToCartPartial" model="@new ProductSizeQuantityServiceModel { ProductId = Model.Id, SizeQuantities = Model.SizeQuantities}" />
-                    </div>
+                    @if (Model.SizeQuantities.All(q => q.Quantity <= 0))
+                    {
+                        <h4 style="color:red;">Out of stock</h4>
+                    }
+                    else
+                    {
+                        <div>
+                            <partial name="_AddProductToCartPartial" model="@new ProductSizeQuantityServiceModel { ProductId = Model.Id, SizeQuantities = Model.SizeQuantities}" />
+                        </div>
+                    }
                     @if (User.IsAdmin())
                     {
                         <a asp-controller="Products" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Edit</a>

@@ -1,31 +1,34 @@
 ﻿namespace BoxingStore.Controllers
 {
-    using AutoMapper;
     using BoxingStore.Data;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Security.Claims;
     using BoxingStore.Models.Orders;
     using BoxingStore.Services.Orders;
-    using BoxingStore.Services.CartService;
+    using BoxingStore.Services.Carts;
+    using BoxingStore.Services.User;
+    using BoxingStore.Infrastructure;
 
     public class OrdersController : Controller
     {
         private readonly IOrderService orders;
         private readonly ICartService carts;
+        private readonly IUserService users;
         private readonly BoxingStoreDbContext data;
 
-        public OrdersController(IOrderService orders, ICartService carts, BoxingStoreDbContext data)
+        public OrdersController(IOrderService orders, ICartService carts, IUserService users, BoxingStoreDbContext data)
         {
             this.orders = orders;
             this.carts = carts;
+            this.users = users;
             this.data = data;
         }
 
         public IActionResult Index([FromQuery] AllOrdersQueryModel query)
         {
             var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var userIsAdmin = this.User.IsInRole("Administrator");
+            var userIsAdmin = this.User.IsAdmin();
 
             var queryResult = this.orders.All(userId, userIsAdmin);
 
@@ -41,8 +44,8 @@
 
             return this.View(new OrderFormServiceModel
             {
-                ClientName = this.data.Users.Find(userId).FullName, //TODO make IUserService and UserService
-                ClientEmail = this.data.Users.Find(userId).Email,
+                ClientName = this.users.FindByFullName(userId), 
+                ClientEmail = this.users.FindByEmail(userId),
                 TotalPrice = this.carts.GetCartTotalPrice(this.carts.GetUserCart(userId).Id)
             });
         }
@@ -63,7 +66,7 @@
         [Authorize]
         public IActionResult Info(int id)
         {
-            var orderData = this.data.Orders.Find(id); //TODO put in service
+            var orderData = this.data.Orders.Find(id); //TODO
 
             var orderProducts = this.orders.GetOrderProductsForOrder(id);
 

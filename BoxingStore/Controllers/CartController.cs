@@ -4,12 +4,12 @@
     using BoxingStore.Data.Models.Enums;
     using BoxingStore.Models;
     using BoxingStore.Models.Cart;
-    using BoxingStore.Services.CartService;
+    using BoxingStore.Services.Carts;
     using BoxingStore.Services.Products;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Security.Claims;
+    using System.Linq;
 
     public class CartController : Controller
     {

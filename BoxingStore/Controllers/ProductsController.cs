@@ -6,6 +6,7 @@
     using BoxingStore.Data.Models.Enums;
     using BoxingStore.Models.Products;
     using BoxingStore.Services.Products;
+    using BoxingStore.Services.Carts;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
@@ -13,22 +14,21 @@
     using System.Linq;
 
     using static Data.DataConstants;
-    using System;
-    using BoxingStore.Services.CartService;
+
 
     public class ProductsController : Controller
     {
         private readonly IProductService products;
         private readonly ICartService carts;
-        private readonly BoxingStoreDbContext data;
         private readonly IMapper mapper;
+        private readonly BoxingStoreDbContext data;
 
-        public ProductsController(IProductService products, ICartService carts, BoxingStoreDbContext data, IMapper mapper)
+        public ProductsController(IProductService products, ICartService carts, IMapper mapper, BoxingStoreDbContext data)
         {
             this.products = products;
             this.carts = carts;
-            this.data = data;
             this.mapper = mapper;
+            this.data = data;
         }
 
         public IActionResult All([FromQuery] AllProductsQueryModel query)
@@ -234,16 +234,28 @@
             {
                 var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
 
-                var cartProduct = new CartProduct
-                {
-                    CartId = currentUserCart.Id,
-                    ProductId = productModel.Id,
-                    Quantity = productModel.Quantity,
-                    Size = productModel.Size
-                };
+                bool cartProductAlreadyExists = this.data.CartProducts.Any(cp => cp.CartId == currentUserCart.Id && cp.ProductId == productModel.Id && cp.Size == productModel.Size);
 
-                this.data.CartProducts.Add(cartProduct);
-                this.data.SaveChanges();
+                if (cartProductAlreadyExists)
+                {
+                    this.ModelState.AddModelError(nameof(productModel.Size),
+                    $"You already have this product with this size in your cart.");
+
+                    successfulOrder = false;
+                }
+                else
+                {
+                    var cartProduct = new CartProduct
+                    {
+                        CartId = currentUserCart.Id,
+                        ProductId = productModel.Id,
+                        Quantity = productModel.Quantity,
+                        Size = productModel.Size
+                    };
+
+                    this.data.CartProducts.Add(cartProduct);
+                    this.data.SaveChanges();
+                }
             }
 
             var productCategory = this.products.ProductCategory(product.CategoryName);

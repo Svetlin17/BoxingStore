@@ -1,10 +1,8 @@
 ﻿namespace BoxingStore.Data.Models
 {
-    using BoxingStore.Data.Models.Enums;
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
 
     public class Order
     {

@@ -68,14 +68,6 @@
                 .Products
                 .OrderByDescending(p => p.Id)  
                 .ProjectTo<LatestProductServiceModel>(this.mapper)
-                //.Select(p => new LatestProductServiceModel
-                //{
-                //    Id = p.Id,
-                //    Brand = p.Brand,
-                //    Name = p.Name,
-                //    Price = p.Price,
-                //    ImageUrl = p.ImageUrl,
-                //})
                 .Take(3)
                 .ToList();
 

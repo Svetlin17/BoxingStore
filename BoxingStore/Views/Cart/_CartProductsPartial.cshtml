@@ -29,7 +29,7 @@
                asp-action="EditQuantity"
                asp-route-id="@Model.Id"
                asp-route-quantity="@(Model.Quantity - 1)"
-               class="btn btn-outline-secondary btn-sm @(Model.Quantity == 1 ? "disabled" : "" )">-</a>
+               class="btn btn-outline-secondary btn-sm @(Model.Quantity <= 1 ? "disabled" : "" )">-</a>
             <input asp-for="Quantity" id="quantity" readonly class="form-control" />
             <a asp-controller="Cart"
                asp-action="EditQuantity"
@@ -63,6 +63,6 @@
         var size = document.getElementById("size");
         var cpId = document.getElementById("cartProductId");
 
-        window.location.href = baseUrl + '?id=' + cpId.value + '&size=' + size.value;
+        window.location.href = baseUrl + '?id=' + cpId.value + '&size=' + size.value;  //where to go
     }
 </script>

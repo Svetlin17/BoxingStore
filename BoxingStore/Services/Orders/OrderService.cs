@@ -1,11 +1,8 @@
 ﻿namespace BoxingStore.Services.Orders
 {
-    using AutoMapper;
-    using BoxingStore;
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Models;
-    using BoxingStore.Services.Products;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -20,7 +17,7 @@
 
         public int Create(OrderFormServiceModel order, string userId, int cartId)
         {
-            var orderData = new Order
+            var orderData = new Order //create order
             {
                 ClientAddress = order.ClientAddress,
                 ClientEmail = order.ClientEmail,
@@ -33,8 +30,9 @@
             this.data.Orders.Add(orderData);
             this.data.SaveChanges();
 
-            CreateOrderProductsForOrder(orderData.Id, cartId);
-            RemovedOrderedProductSizeQuantites(orderData.Id);
+            //we can take the id of the just created object
+            CreateOrderProductsAndDeleteCartProducts(orderData.Id, cartId); // and delete the products from the cart
+            RemovedOrderedProductSizeQuantites(orderData.Id);  //after the order is created, reduce quantities of the products in DB 
 
             orderData.TotalPrice = GetOrderTotalPrice(orderData.Id);
 
@@ -45,20 +43,20 @@
             return orderData.Id;
         }
 
-        public OrderInfoServiceModel FindById(int id)
-            => this.data
-            .Orders
-            .Where(p => p.Id == id)
-            .Select(o => new OrderInfoServiceModel
-            {
-                ClientAddress = o.ClientAddress,
-                ClientEmail = o.ClientEmail,
-                ClientName = o.ClientName,
-                ClientPhoneNumber = o.ClientPhoneNumber,
-                OrderProducts = o.OrderProducts,
-                TotalPrice = o.TotalPrice
-            })
-            .FirstOrDefault();
+        //public OrderInfoServiceModel FindById(int id)
+        //    => this.data
+        //    .Orders
+        //    .Where(p => p.Id == id)
+        //    .Select(o => new OrderInfoServiceModel
+        //    {
+        //        ClientAddress = o.ClientAddress,
+        //        ClientEmail = o.ClientEmail,
+        //        ClientName = o.ClientName,
+        //        ClientPhoneNumber = o.ClientPhoneNumber,
+        //        OrderProducts = o.OrderProducts,
+        //        TotalPrice = o.TotalPrice
+        //    })
+        //    .FirstOrDefault();
 
         public OrderQueryServiceModel All(string userId, bool isAdmin)
         {
@@ -150,13 +148,13 @@
             }
         }
 
-        private void CreateOrderProductsForOrder(int orderId, int cartId)
+        private void CreateOrderProductsAndDeleteCartProducts(int orderId, int cartId)
         {
             var cartProducts = this.data.CartProducts.Where(c => c.CartId == cartId);
 
             foreach (var cartProduct in cartProducts)
             {
-                var orderProduct = new OrderProduct //analogically
+                var orderProduct = new OrderProduct //for every cart product creates an order product - analogically
                 {
                     OrderId = orderId,
                     ProductId = cartProduct.ProductId,

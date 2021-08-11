@@ -1,8 +1,8 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-
-namespace BoxingStore.Data.Migrations
+﻿namespace BoxingStore.Data.Migrations
 {
+    using System;
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class OrderAndOrderProductTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

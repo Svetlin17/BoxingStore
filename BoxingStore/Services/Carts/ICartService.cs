@@ -1,4 +1,4 @@
-﻿namespace BoxingStore.Services.CartService
+﻿namespace BoxingStore.Services.Carts
 {
     using BoxingStore.Data.Models;
 

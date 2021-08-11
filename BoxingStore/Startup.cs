@@ -3,10 +3,11 @@ namespace BoxingStore
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Infrastructure;
-    using BoxingStore.Services.CartService;
+    using BoxingStore.Services.Carts;
     using BoxingStore.Services.Orders;
     using BoxingStore.Services.Products;
     using BoxingStore.Services.Statistics;
+    using BoxingStore.Services.User;
     using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Identity;
@@ -56,6 +57,8 @@ namespace BoxingStore
             services.AddTransient<IProductService, ProductService>();
             services.AddTransient<IOrderService, OrderService>();
             services.AddTransient<ICartService, CartService>();
+            services.AddTransient<IUserService, UserService>();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

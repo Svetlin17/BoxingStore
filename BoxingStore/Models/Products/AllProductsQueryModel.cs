@@ -4,9 +4,11 @@
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
+    using static Data.DataConstants;
+
     public class AllProductsQueryModel
     {
-        public const int ProductsPerPage = 15;
+        public const int ProductsPerPage = ProductsPerPageNumber;
 
         public string Brand { get; init; }
 

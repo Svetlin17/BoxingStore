@@ -1,9 +1,9 @@
-﻿using BoxingStore.Data.Models.Enums;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-
-namespace BoxingStore.Data.Models
+﻿namespace BoxingStore.Data.Models
 {
+    using BoxingStore.Data.Models.Enums;
+    using System.ComponentModel.DataAnnotations;
+    using System.ComponentModel.DataAnnotations.Schema;
+
     public class ProductSizeQuantity
     {
         public int Id { get; init; }

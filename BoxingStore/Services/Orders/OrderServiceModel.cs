@@ -1,6 +1,5 @@
 ﻿namespace BoxingStore.Services.Orders
 {
-    using BoxingStore.Data.Models.Enums;
     using System;
 
     public class OrderServiceModel
