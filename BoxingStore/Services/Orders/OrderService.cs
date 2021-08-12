@@ -3,7 +3,6 @@
     using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Models;
-    using BoxingStore.Services.Products;
     using System.Collections.Generic;
     using System.Linq;
 
@@ -44,20 +43,20 @@
             return orderData.Id;
         }
 
-        //public OrderInfoServiceModel FindById(int id)
-        //    => this.data
-        //    .Orders
-        //    .Where(p => p.Id == id)
-        //    .Select(o => new OrderInfoServiceModel
-        //    {
-        //        ClientAddress = o.ClientAddress,
-        //        ClientEmail = o.ClientEmail,
-        //        ClientName = o.ClientName,
-        //        ClientPhoneNumber = o.ClientPhoneNumber,
-        //        OrderProducts = o.OrderProducts,
-        //        TotalPrice = o.TotalPrice
-        //    })
-        //    .FirstOrDefault();
+        public OrderInfoServiceModel FindById(int id)
+            => this.data
+              .Orders
+              .Where(p => p.Id == id)
+              .Select(o => new OrderInfoServiceModel
+              {
+                  ClientAddress = o.ClientAddress,
+                  ClientEmail = o.ClientEmail,
+                  ClientName = o.ClientName,
+                  ClientPhoneNumber = o.ClientPhoneNumber,
+                  TotalPrice = o.TotalPrice,
+                  OrderDate = o.OrderDate
+              })
+              .FirstOrDefault();
 
         public OrderQueryServiceModel All(string userId, bool isAdmin)
         {

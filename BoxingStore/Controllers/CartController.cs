@@ -1,74 +1,32 @@
 ﻿namespace BoxingStore.Controllers
 {
-    using BoxingStore.Data;
     using BoxingStore.Data.Models.Enums;
-    using BoxingStore.Models;
     using BoxingStore.Models.Cart;
     using BoxingStore.Services.Carts;
     using BoxingStore.Services.Products;
     using Microsoft.AspNetCore.Mvc;
-    using System.Collections.Generic;
-    using System.Security.Claims;
-    using System.Linq;
-    using BoxingStore.Data.Models;
+    using BoxingStore.Infrastructure;
 
     public class CartController : Controller
     {
         private readonly IProductService products;
         private readonly ICartService carts;
-        private readonly BoxingStoreDbContext data;
 
-        public CartController(IProductService products, ICartService carts, BoxingStoreDbContext data)
+        public CartController(IProductService products, ICartService carts)
         {
             this.products = products;
             this.carts = carts;
-            this.data = data;
         }
 
-        public IActionResult Index() //TODO here I change the size when another person ordered
+        public IActionResult Index()
         {
-            var currentCartId = this.data.Users.Find(this.User.FindFirstValue(ClaimTypes.NameIdentifier)).CartId;
+            var cart = this.carts.GetUserCart(this.User.Id());
 
-            var cart = this.data.Carts.Find(currentCartId);
+            //if ordered, the quantity is reduced to max quantity
+            //if deleted, the product is removed from current user cart
+            this.carts.CheckCartProductsForOrderedQuantities(cart.Id); 
 
-            var cartProducts = new List<CartProductsQueryModel>();
-
-            foreach (var cartProduct in this.data.CartProducts.Where(x => x.CartId == cart.Id).ToList())
-            {
-                //If someone else has ordered the quantity is reduced to max quantity------------------
-                int maxQuantity = this.products.MaxQuantityAvailable(cartProduct.ProductId, cartProduct.Size);
-
-                if (maxQuantity == 0)
-                {
-                    this.data.CartProducts.Remove(cartProduct);
-
-                    continue;
-                }
-                if (cartProduct.Quantity > maxQuantity)
-                {
-                    cartProduct.Quantity = maxQuantity;
-                }
-                //-------------------------------------------------------------------------------------
-
-                var product = this.data.Products.Find(cartProduct.ProductId);
-
-                ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
-
-                cartProducts.Add(new CartProductsQueryModel
-                {
-                    Id = cartProduct.Id,
-                    Quantity = cartProduct.Quantity,
-                    Size = cartProduct.Size,
-                    ProductImageUrl = product.ImageUrl,
-                    ProductName = product.Brand + " " + product.Name,
-                    ProductId = product.Id,
-                    Price = product.Price,
-                    ProductTotalPrice = product.Price * cartProduct.Quantity, //the totalprice of 1 single product in the cart
-                    MaxQuantityAvailable = this.products.MaxQuantityAvailable(product.Id, cartProduct.Size),
-                    SizeQuantities = allSizesForCurrentProduct
-                });
-            }
-            this.data.SaveChanges();
+            var cartProducts = this.carts.GetCartProductsForCart(cart.Id);
 
             return View(new CartViewModel
             {
@@ -80,52 +38,23 @@
 
         public IActionResult EditSize(int id, ProductSize size) //put in cart service
         {
-            var cartProduct = this.data.CartProducts.Find(id);
+            var currentUserCart = this.carts.GetUserCart(this.User.Id());
 
-            var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
-
-            bool cartProductAlreadyExists = this.carts
-                                    .IsThisProductWithThisSizeInCart(currentUserCart.Id, cartProduct.ProductId, size);
-
-            if (cartProductAlreadyExists)
-            {
-                //TODO $"You already have this product with this size in your cart.");
-            }
-            else
-            {
-                cartProduct.Size = size;
-
-                this.data.SaveChanges();
-
-                var maxQuantityOfNewSize = this.products.MaxQuantityAvailable(cartProduct.ProductId, cartProduct.Size);
-
-                if (cartProduct.Quantity > maxQuantityOfNewSize)
-                {
-                    EditQuantity(cartProduct.Id, maxQuantityOfNewSize);
-                }
-            }
+            this.carts.EditCartProductSize(id, size, currentUserCart);
 
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult EditQuantity(int id, int quantity) //put in cart service
+        public IActionResult EditQuantity(int id, int quantity)
         {
-            this.data.CartProducts.Find(id).Quantity = quantity;
-
-            this.data.SaveChanges();
+            this.carts.EditCartProductQuantity(id, quantity);
 
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Delete(int id)
         {
-            var cartProduct = this.data.CartProducts.Find(id);
-
-            if (cartProduct != null)
-            {
-                this.data.CartProducts.Remove(cartProduct);
-                this.data.SaveChanges();
-            }
+            this.carts.DeleteCartProduct(id);
 
             return RedirectToAction(nameof(Index));
         }

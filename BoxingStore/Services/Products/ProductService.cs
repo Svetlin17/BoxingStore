@@ -191,7 +191,7 @@
             .Categories
             .Any(p => p.Id == categoryId);
 
-        public int MaxQuantityAvailable(int productId, ProductSize size)
+        public int MaxQuantityOfSizeAvailable(int productId, ProductSize size)
         => this.data
             .ProductSizeQuantities
             .Where(p => p.ProductId == productId && p.Size == size)
@@ -208,6 +208,20 @@
             }
 
             return convertedName;
+        }
+
+        private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, int productId)
+        {
+            var product = this.data.Products.Find(productId);
+
+            var productData = new ProductSizeQuantity
+            {
+                ProductId = product.Id,
+                Size = (ProductSize)size,
+                Quantity = quantity
+            };
+
+            return productData;
         }
     }
 }

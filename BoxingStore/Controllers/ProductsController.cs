@@ -10,11 +10,10 @@
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
-    using System.Security.Claims;
     using System.Linq;
 
     using static Data.DataConstants;
-
+    using BoxingStore.Infrastructure;
 
     public class ProductsController : Controller
     {
@@ -217,7 +216,7 @@
         [HttpPost]
         public IActionResult Details(ProductSizeQuantityServiceModel productModel)
         {
-            var quantityAvailable = this.products.MaxQuantityAvailable(productModel.Id, productModel.Size);
+            var quantityAvailable = this.products.MaxQuantityOfSizeAvailable(productModel.Id, productModel.Size);
 
             var product = this.products.FindById(productModel.Id);
 
@@ -232,7 +231,7 @@
             }
             else
             {
-                var currentUserCart = this.carts.GetUserCart(this.User.FindFirstValue(ClaimTypes.NameIdentifier));
+                var currentUserCart = this.carts.GetUserCart(this.User.Id());
 
                 bool cartProductAlreadyExists = this.carts.IsThisProductWithThisSizeInCart(currentUserCart.Id, productModel.Id, productModel.Size);
 
@@ -277,6 +276,7 @@
         });
         }
 
+        //DELETE LATER
         private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, int productId)
         {
             var product = this.data.Products.Find(productId);

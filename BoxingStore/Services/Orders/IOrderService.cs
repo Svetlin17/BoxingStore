@@ -17,5 +17,7 @@
         void CompleateOrder(int id);
 
         void DeleteOrder(int id);
+
+        OrderInfoServiceModel FindById(int id);
     }
 }

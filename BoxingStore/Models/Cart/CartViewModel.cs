@@ -6,8 +6,8 @@
     {
         public int Id { get; set; }
 
-        public ICollection<CartProductsQueryModel> CartProducts { get; set; }
-
         public double TotalPrice { get; set; }
+
+        public IEnumerable<CartProductsQueryModel> CartProducts { get; set; }
     }
 }

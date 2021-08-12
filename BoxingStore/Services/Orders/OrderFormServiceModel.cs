@@ -1,11 +1,15 @@
 ﻿namespace BoxingStore.Services.Orders
 {
     using BoxingStore.Models;
+    using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
 
     public class OrderFormServiceModel
     {
+        [Display(Name = "Order Date")]
+        public DateTime? OrderDate { get; set; }
+
         [Display(Name = "Status")]
         public bool IsCompleated { get; set; }
 

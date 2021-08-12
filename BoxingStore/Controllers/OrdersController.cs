@@ -1,9 +1,7 @@
 ﻿namespace BoxingStore.Controllers
 {
-    using BoxingStore.Data;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
-    using System.Security.Claims;
     using BoxingStore.Models.Orders;
     using BoxingStore.Services.Orders;
     using BoxingStore.Services.Carts;
@@ -15,19 +13,18 @@
         private readonly IOrderService orders;
         private readonly ICartService carts;
         private readonly IUserService users;
-        private readonly BoxingStoreDbContext data;
 
-        public OrdersController(IOrderService orders, ICartService carts, IUserService users, BoxingStoreDbContext data)
+        public OrdersController(IOrderService orders, ICartService carts, IUserService users)
         {
             this.orders = orders;
             this.carts = carts;
             this.users = users;
-            this.data = data;
         }
 
+        [Authorize]
         public IActionResult Index([FromQuery] AllOrdersQueryModel query)
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = this.User.Id();
             var userIsAdmin = this.User.IsAdmin();
 
             var queryResult = this.orders.All(userId, userIsAdmin);
@@ -40,7 +37,7 @@
         [Authorize]
         public IActionResult Create()
         {
-            var userId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userId = this.User.Id();
 
             return this.View(new OrderFormServiceModel
             {
@@ -54,7 +51,7 @@
         [Authorize]
         public IActionResult Create(OrderFormServiceModel orderModel)
         {
-            var currentUserId = this.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var currentUserId = this.User.Id();
 
             var currentUserCart = this.carts.GetUserCart(currentUserId);
 
@@ -66,7 +63,7 @@
         [Authorize]
         public IActionResult Info(int id)
         {
-            var orderData = this.data.Orders.Find(id); //TODO
+            var orderData = this.orders.FindById(id);
 
             var orderProducts = this.orders.GetOrderProductsForOrder(id);
 
@@ -78,7 +75,8 @@
                 ClientName = orderData.ClientName,
                 ClientPhoneNumber = orderData.ClientPhoneNumber,
                 OrderProducts = orderProducts,
-                TotalPrice = orderData.TotalPrice
+                TotalPrice = orderData.TotalPrice,
+                OrderDate = orderData.OrderDate
             });
         }
 
