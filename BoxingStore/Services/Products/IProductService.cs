@@ -18,11 +18,14 @@
 
         IEnumerable<LatestProductServiceModel> Latest();
 
+        Product Find(int id);
+
         ProductDetailsServiceModel FindById(int Id);
 
         ProductDetailsServiceModel FindByConvertedName(string convertedName);
 
         int Create(ProductFormServiceModel product, string convertedName);
+
         bool Edit(
                 int id,
                 string brand,
@@ -36,9 +39,17 @@
                 int quantityM,
                 int quantityL);
 
+        void Remove(Product product);
+
+        void AddProductToCart(CartProduct cartProduct);
+
         IEnumerable<string> BrandsSorting();
 
         ICollection<ProductSizeQuantity> ProductSizeQuantity(int productId);
+
+        void RemoveProductSizeQuantities(ProductSizeQuantity psq);
+
+        void AddQuantities(ProductFormServiceModel product, int ProductQuantityMin, int productId);
 
         IEnumerable<ProductCategoryServiceModel> AllCategories();
 
@@ -47,6 +58,8 @@
         bool CategoryExists(int categoryId);
 
         string CreateConvertedName(ProductFormServiceModel product);
+
+        bool ConvertedNameExists(string convertedName);
 
         int MaxQuantityOfSizeAvailable(int productId, ProductSize size);
     }

@@ -63,6 +63,18 @@
             return true;
         }
 
+        public void Remove(Product product)
+        {
+            this.data.Products.Remove(product);
+            this.data.SaveChanges();
+        }
+
+        public void AddProductToCart(CartProduct cartProduct)
+        {
+            this.data.CartProducts.Add(cartProduct);
+            this.data.SaveChanges();
+        }
+
         public IEnumerable<LatestProductServiceModel> Latest()
             => this.data
                 .Products
@@ -134,6 +146,9 @@
             };
         }
 
+        public Product Find(int id)
+            => this.data.Products.Find(id);
+
         public ProductDetailsServiceModel FindById(int id)
             => this.data
             .Products
@@ -181,6 +196,30 @@
         public ICollection<ProductSizeQuantity> ProductSizeQuantity(int productId)
             => this.data.ProductSizeQuantities.Where(p => p.ProductId == productId).ToList();
 
+        public void RemoveProductSizeQuantities(ProductSizeQuantity psq)
+        {
+            this.data.ProductSizeQuantities.Remove(psq);
+        }
+
+        public void AddQuantities(ProductFormServiceModel product, int ProductQuantityMin, int productId)
+        {
+            if (product.QuantityS >= ProductQuantityMin)
+            {
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.S, product.QuantityS, productId));
+                this.data.SaveChanges();
+            }
+            if (product.QuantityM >= ProductQuantityMin)
+            {
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.M, product.QuantityM, productId));
+                this.data.SaveChanges();
+            }
+            if (product.QuantityL >= ProductQuantityMin)
+            {
+                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.L, product.QuantityL, productId));
+                this.data.SaveChanges();
+            }
+        }
+
         public IEnumerable<ProductCategoryServiceModel> AllCategories()
         => this.data
                 .Categories
@@ -217,6 +256,9 @@
 
             return convertedName;
         }
+
+        public bool ConvertedNameExists(string convertedName)
+            => this.data.Products.Any(p => p.ConvertedName == convertedName);
 
         private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, int productId)
         {

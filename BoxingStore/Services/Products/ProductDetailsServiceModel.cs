@@ -7,8 +7,6 @@
     {
         public string Description { get; init; }
 
-        public int CategoryId { get; init; }
-
         public ICollection<ProductSizeQuantity> SizeQuantities { get; set; }
 
         public bool NoteAfterOrder { get; set; }

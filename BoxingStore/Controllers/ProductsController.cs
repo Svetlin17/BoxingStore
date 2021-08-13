@@ -20,14 +20,12 @@
         private readonly IProductService products;
         private readonly ICartService carts;
         private readonly IMapper mapper;
-        private readonly BoxingStoreDbContext data;
 
-        public ProductsController(IProductService products, ICartService carts, IMapper mapper, BoxingStoreDbContext data)
+        public ProductsController(IProductService products, ICartService carts, IMapper mapper)
         {
             this.products = products;
             this.carts = carts;
             this.mapper = mapper;
-            this.data = data;
         }
 
         public IActionResult All([FromQuery] AllProductsQueryModel query)
@@ -69,7 +67,7 @@
 
             string convertedName = this.products.CreateConvertedName(product);
 
-            if (this.data.Products.Any(p => p.ConvertedName == convertedName)) //validates that the converted name is unique
+            if (this.products.ConvertedNameExists(convertedName)) //validates that the converted name is unique
             {
                 product.Categories = this.products.AllCategories();
 
@@ -92,21 +90,7 @@
 
             var productId = this.products.Create(product, convertedName);
 
-            if (product.QuantityS >= ProductQuantityMin)
-            {
-                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.S, product.QuantityS, productId));
-                this.data.SaveChanges();
-            }
-            if (product.QuantityM >= ProductQuantityMin)
-            {
-                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.M, product.QuantityM, productId));
-                this.data.SaveChanges();
-            }
-            if (product.QuantityL >= ProductQuantityMin)
-            {
-                this.data.ProductSizeQuantities.Add(CreateProductSizeQuantity(ProductSize.L, product.QuantityL, productId));
-                this.data.SaveChanges();
-            }
+            this.products.AddQuantities(product, ProductQuantityMin, productId);
 
             return RedirectToAction(nameof(All)); //must redirect in order not to dublicate data when refreshing
         }
@@ -178,18 +162,16 @@
         [Authorize(Roles = WebConstants.AdministratorRoleName)]
         public IActionResult Delete(int id)
         {
-            var product = this.data.Products.Find(id);
+            var product = this.products.Find(id);
 
             ICollection<ProductSizeQuantity> allSizesForCurrentProduct = this.products.ProductSizeQuantity(product.Id);
 
             foreach (var psq in allSizesForCurrentProduct)
             {
-                this.data.ProductSizeQuantities.Remove(psq);
+                this.products.RemoveProductSizeQuantities(psq);
             }
 
-            this.data.Products.Remove(product);
-
-            this.data.SaveChanges();
+            this.products.Remove(product);
 
             return RedirectToAction(nameof(All));
         }
@@ -255,8 +237,7 @@
                         Size = productModel.Size
                     };
 
-                    this.data.CartProducts.Add(cartProduct);
-                    this.data.SaveChanges();
+                    this.products.AddProductToCart(cartProduct);
                 }
             }
 
@@ -282,7 +263,7 @@
         //DELETE LATER
         private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, int productId)
         {
-            var product = this.data.Products.Find(productId);
+            var product = this.products.Find(productId);
 
             var productData = new ProductSizeQuantity
             {
