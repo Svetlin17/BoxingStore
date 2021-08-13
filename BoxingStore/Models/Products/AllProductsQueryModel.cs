@@ -1,5 +1,6 @@
 ﻿namespace BoxingStore.Models.Products
 {
+    using BoxingStore.Service.Products;
     using BoxingStore.Services.Products;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
@@ -12,8 +13,6 @@
 
         public string Brand { get; init; }
 
-        public string Category { get; init; }
-
         [Display(Name = "Search by text")]
         public string SearchTerm { get; init; }
 
@@ -23,10 +22,15 @@
 
         public int TotalProducts { get; set; }
 
+        [Display(Name = "Category")]
+        public int CategoryId { get; init; }
+
+        public IEnumerable<ProductCategoryServiceModel> Categories { get; set; }
+
         public IEnumerable<string> Brands { get; set; }
 
-        public IEnumerable<string> Categories { get; set; }
-
         public IEnumerable<ProductServiceModel> Products { get; set; }
+
+
     }
 }

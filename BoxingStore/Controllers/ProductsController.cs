@@ -7,13 +7,13 @@
     using BoxingStore.Models.Products;
     using BoxingStore.Services.Products;
     using BoxingStore.Services.Carts;
+    using BoxingStore.Infrastructure;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
     using System.Collections.Generic;
     using System.Linq;
 
     using static Data.DataConstants;
-    using BoxingStore.Infrastructure;
 
     public class ProductsController : Controller
     {
@@ -34,16 +34,19 @@
         {
             var queryResult = this.products.All(
                 query.Brand,
+                query.CategoryId,
                 query.SearchTerm,
                 query.Sorting,
                 query.CurrentPage,
                 AllProductsQueryModel.ProductsPerPage);
 
             var productBrands = this.products.BrandsSorting();
+            var categories = this.products.AllCategories();
 
             query.Brands = productBrands;
             query.TotalProducts = queryResult.TotalProducts;
             query.Products = queryResult.Products;
+            query.Categories = categories;
 
             return View(query);
         }

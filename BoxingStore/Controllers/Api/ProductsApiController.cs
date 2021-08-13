@@ -17,6 +17,7 @@
         public ProductQueryServiceModel All([FromQuery] AllProductsApiRequestModel query)
             => this.products.All(
                 query.Brand,
+                query.CategoryId,
                 query.SearchTerm,
                 query.Sorting,
                 query.CurrentPage,

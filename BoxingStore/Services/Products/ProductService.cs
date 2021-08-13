@@ -73,6 +73,7 @@
 
         public ProductQueryServiceModel All(
             string brand,
+            int categoryId,
             string searchTerm,
             ProductSorting sorting,
             int currentPage,
@@ -80,11 +81,16 @@
         {
             var productsQuery = this.data.Products.AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(brand))
+            if (!string.IsNullOrWhiteSpace(brand)) //All = null
             {
                 productsQuery = productsQuery.Where(c => c.Brand == brand);
             }
 
+            if (categoryId != 0) //All = 0
+            {
+                productsQuery = productsQuery.Where(c => c.CategoryId == categoryId);
+            }
+            
             if (!string.IsNullOrWhiteSpace(searchTerm))
             {
                 productsQuery = productsQuery.Where(p =>
@@ -114,6 +120,7 @@
                     ConvertedName = p.ConvertedName,
                     Price = p.Price,
                     ImageUrl = p.ImageUrl,
+                    CategoryId = p.CategoryId,
                     CategoryName = p.Category.Name
                 })
                 .ToList();
@@ -123,9 +130,10 @@
                 TotalProducts = totalProducts,
                 CurrentPage = currentPage,
                 ProductsPerPage = productsPerPage,
-                Products = products
+                Products = products,
             };
         }
+
         public ProductDetailsServiceModel FindById(int id)
             => this.data
             .Products

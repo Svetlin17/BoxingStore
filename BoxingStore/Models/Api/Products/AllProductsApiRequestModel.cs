@@ -4,6 +4,8 @@
     {
         public string Brand { get; init; }
 
+        public int CategoryId { get; init; }
+
         public string SearchTerm { get; init; }
 
         public ProductSorting Sorting { get; init; }

@@ -15,5 +15,7 @@
         public string ImageUrl { get; init; }
 
         public string CategoryName { get; init; }
+
+        public int CategoryId { get; init; }
     }
 }

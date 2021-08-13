@@ -10,6 +10,7 @@
     {
         ProductQueryServiceModel All(
             string brand,
+            int categoryId,
             string searchTerm,
             ProductSorting sorting,
             int currentPage,
