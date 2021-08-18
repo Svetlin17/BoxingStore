@@ -6,9 +6,8 @@
     using BoxingStore.Models.Cart;
     using BoxingStore.Models;
     using BoxingStore.Services.Products;
-    using System.Linq;
     using System.Collections.Generic;
-    using System;
+    using System.Linq;
 
     public class CartService : ICartService
     {
@@ -138,6 +137,7 @@
                     EditCartProductQuantity(cartProduct.Id, maxQuantityOfNewSize);
                 }
             }
+
         }
 
         public void DeleteCartProduct(int cartProductId)

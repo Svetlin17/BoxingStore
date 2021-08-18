@@ -199,7 +199,7 @@
 
             var successfulOrder = true;
 
-            if (productModel.Quantity > quantityAvailable)
+            if (productModel.Quantity > quantityAvailable || productModel.Quantity <= 0)
             {
                 this.ModelState.AddModelError(nameof(productModel.Quantity),
                     $"The quantity is unvailable. There are only {quantityAvailable} items with size {productModel.Size} left.");
