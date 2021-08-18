@@ -1,9 +1,8 @@
-﻿using BoxingStore.Data.Models;
-using BoxingStore.Service.Products;
-using BoxingStore.Services.CustomAttributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using BoxingStore.Service.Products;
+using BoxingStore.Services.CustomAttributes;
 
 using static BoxingStore.Data.DataConstants;
 

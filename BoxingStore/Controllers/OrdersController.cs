@@ -67,7 +67,7 @@
 
             var orderProducts = this.orders.GetOrderProductsForOrder(id);
 
-            return View(new OrderFormServiceModel 
+            return View(new OrderInfoServiceModel 
             {
                 IsCompleated = orderData.IsCompleated,
                 ClientAddress = orderData.ClientAddress,

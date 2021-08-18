@@ -122,6 +122,7 @@
             var totalProducts = productsQuery.Count();
 
             var products = productsQuery
+                //.OrderByDescending(p => p.Id)  //this way the sortings wont work
                 .Skip((currentPage - 1) * productsPerPage)
                 .Take(productsPerPage)
                 .Select(p => new ProductServiceModel

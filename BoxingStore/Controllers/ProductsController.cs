@@ -1,7 +1,6 @@
 ﻿namespace BoxingStore.Controllers
 {
     using AutoMapper;
-    using BoxingStore.Data;
     using BoxingStore.Data.Models;
     using BoxingStore.Data.Models.Enums;
     using BoxingStore.Models.Products;
@@ -111,13 +110,6 @@
             productForm.QuantityL = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.L).FirstOrDefault().Quantity;
 
             return View(productForm);
-
-            //return View(new ProductFormServiceModel
-            //{
-            //    Brand = product.Brand,
-            //    Categories = this.products.AllCategories(),
-            //    QuantityS = allSizesForCurrentProduct.Where(x => x.Size == ProductSize.S).FirstOrDefault().Quantity,
-            //});
         }
 
         [HttpPost]

@@ -22,11 +22,11 @@ else
     <table class="table">
         <thead>
             <tr>
-                <th scope="col" width="260">Product</th>
-                <th scope="col" width="260">Price</th>
-                <th scope="col" width="220">Size</th>
-                <th scope="col" width="260">Quantity</th>
-                <th scope="col" width="30">Total Price</th>
+                <th scope="col" class="col-4">Product</th>
+                <th scope="col" class="col-2">Price</th>
+                <th scope="col" class="col-2">Size</th>
+                <th scope="col" class="col-2">Quantity</th>
+                <th scope="col" class="col-2">Total Price</th>
                 <th></th>
             </tr>
         </thead>
@@ -40,11 +40,13 @@ else
     <div class="float-right">
         <hr />
         <div class="form-row">
-            <div class="form-group col-md-6">
+            <div class="form-group col-6">
                 <h3>Total Price:</h3>
-                <input asp-for="TotalPrice" readonly class="form-control-plaintext form-control-lg" />
+                <input asp-for="TotalPrice" readonly class="ml-5 col-5 form-control-plaintext form-control-lg text-right" />
             </div>
-            <a asp-controller="Orders" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary text-uppercase">Order</a>
+            <div class="col-6">
+                <a asp-controller="Orders" asp-action="Create" asp-route-id="@Model.Id" class="btn btn-primary btn-lg text-uppercase">Order</a>
+            </div>
         </div>        
         <br />
         <br />

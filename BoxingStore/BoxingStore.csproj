@@ -7,6 +7,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\Home\**" />
+    <Compile Remove="Services\Home\**" />
+    <Content Remove="Models\Home\**" />
+    <Content Remove="Services\Home\**" />
+    <EmbeddedResource Remove="Models\Home\**" />
+    <EmbeddedResource Remove="Services\Home\**" />
+    <None Remove="Models\Home\**" />
+    <None Remove="Services\Home\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.1.1" />
     <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="5.0.7" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="5.0.8" />
@@ -18,11 +29,6 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Models\Home\" />
-    <Folder Include="Services\Home\" />
   </ItemGroup>
 
 </Project>

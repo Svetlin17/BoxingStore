@@ -11,7 +11,7 @@
 
         double GetOrderTotalPrice(int orderId);
 
-        //OrderInfoServiceModel FindById(int id);
+        //OrderFormServiceModel FindById(int id);
 
         IEnumerable<OrderProductsQueryModel> GetOrderProductsForOrder(int orderId);
         void CompleateOrder(int id);

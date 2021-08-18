@@ -1,7 +1,7 @@
 ﻿@model OrderProductsQueryModel
 
 <div class="d-flex justify-content-between align-items-center mt-3 p-2 items rounded">
-    <div scope="col" width="260" class="d-flex flex-row">
+    <div scope="col" class="col-3 d-flex flex-row">
         <a asp-area="" asp-controller="Products" asp-action="Details" asp-route-id="@Model.ProductId">
             <img src="@Model.ProductImageUrl" width="50" height="50">
         </a>
@@ -11,17 +11,18 @@
             </a>
         </div>
     </div>
-    <div class="d-block ml-5 font-weight-bold">
+    <div class="d-block font-weight-bold">
         <input asp-for="Price" id="price" readonly class="form-control-plaintext" />
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
     <div class="d-flex flex-row align-items-center">
-        <input asp-for="Size" class="form-control-plaintext" />
-        <span asp-validation-for="Size" class="text-danger"></span>
-        <div class="d-block ml-5 font-weight-bold">
-            <input asp-for="Quantity" id="quantity" readonly class="form-control-plaintext"/>
+        <div class="col-3">
+            <input asp-for="Size" class="form-control-plaintext" />
         </div>
-        <div class="d-block ml-5 font-weight-bold">
+        <div class="ml-3 col-4">
+            <input asp-for="Quantity" type="text" id="quantity" readonly class="form-control-plaintext" />
+        </div>
+        <div class="d-block ml-5 font-weight-bold col-2">
             <input asp-for="ProductTotalPrice" id="totalPrice" readonly class="form-control-plaintext" />
             <span asp-validation-for="ProductTotalPrice" class="text-danger"></span>
         </div>
