@@ -38,8 +38,6 @@
 
             this.data.SaveChanges();
 
-            //TODO call IOrderService to remove from ProductSizeQuantities the ordered quantities
-
             return orderData.Id;
         }
 

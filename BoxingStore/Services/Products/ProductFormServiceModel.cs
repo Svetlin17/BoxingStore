@@ -28,8 +28,6 @@ namespace BoxingStore.Services.Products
         [ProductSizeAttribute(ErrorMessage = ProductQuantityErrMsg)]
         public int QuantityL { get; set; }
 
-        //public ICollection<ProductSizeQuantity> ProductSizeQuantities { get; set; }
-
         [Required]
         public string Description { get; init; }
 

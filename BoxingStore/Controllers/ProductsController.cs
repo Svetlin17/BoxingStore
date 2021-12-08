@@ -251,20 +251,5 @@
                 NoteAfterOrder = successfulOrder  //after adding in DB 
         });
         }
-
-        //DELETE LATER
-        private ProductSizeQuantity CreateProductSizeQuantity(ProductSize size, int quantity, int productId)
-        {
-            var product = this.products.Find(productId);
-
-            var productData = new ProductSizeQuantity
-            {
-                ProductId = product.Id,
-                Size = (ProductSize)size,
-                Quantity = quantity
-            };
-
-            return productData;
-        }
     }
 }
